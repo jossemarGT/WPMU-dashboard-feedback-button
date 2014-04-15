@@ -1,0 +1,33 @@
+.feedback-button-group {
+	float: right;
+}
+
+.feedback-button {
+	position: relative;
+	margin-right: 5px !important; 
+	background-color: gray;
+	width: 34px;
+	cursor: pointer;
+}
+
+.feedback-button .ab-item {
+	position: relative !important;
+	width: 8px !important; /* inherits padding: 0 10px;*/
+	background-color: transparent;
+	text-indent: -999em;
+	background-image: url(../assets/icons-white.png);
+	background-repeat: no-repeat!important;
+}
+
+.feedback-button .ab-item:hover {
+	top: 2px;
+	background-image: url(../assets/icons-white.png)!important;
+}
+
+.feedback-button.positive .ab-item, .feedback-button.positive .ab-item:hover {
+	background-position: 0 1px;
+}
+
+.feedback-button.negative .ab-item, .feedback-button.negative .ab-item:hover {
+	background-position: -30px 1px!important;
+}
