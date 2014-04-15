@@ -10,7 +10,7 @@
 	cursor: pointer;
 }
 
-.feedback-button .ab-item {
+.feedback-button > .ab-item {
 	position: relative !important;
 	width: 8px !important; /* inherits padding: 0 10px;*/
 	background-color: transparent;
@@ -19,8 +19,7 @@
 	background-repeat: no-repeat!important;
 }
 
-.feedback-button .ab-item:hover {
-	top: 2px;
+.feedback-button:hover > .ab-item {
 	background-image: url(../assets/icons-white.png)!important;
 }
 

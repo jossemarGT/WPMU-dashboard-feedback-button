@@ -210,8 +210,8 @@ class MUDashboardFeedbackButton{
 	 */
 	public function add_plugin_admin_menu() {
 		$this->plugin_screen_hook_suffix = add_plugins_page(
-			__("MU Dashboard Feedback Button - Administration", $this->plugin_slug), // Page Title
-			__("MU Dashboard Feedback Button", $this->plugin_slug), //Menu title
+			__("MU Dashboard Feedback - Administration", $this->plugin_slug), // Page Title
+			__("MU Dashboard Feedback", $this->plugin_slug), //Menu title
 			"manage_network", // Capability
 			$this->plugin_slug, // slug
 			array($this, "display_plugin_admin_page") //callback
@@ -261,11 +261,13 @@ class MUDashboardFeedbackButton{
 		// Add positive feedback form to the :) button
 		$args = array(
 				'id'    => 'feedback_button_positive_form',
-				'title' =>  __( 'Positive feedback', $this->plugin_slug ),
-				'parent' => 'feedback_button_group',
+				'title' =>  __( 'What did you like?', $this->plugin_slug ),
+				'parent' => 'feedback_button_positive',
 				'meta'  => array( 
 					'class' => "feedback-button positive feedback-button-plugin",
-					'html' => "<form action>:)</form>"
+					'html' => "<form action='#' method='post'>
+					<textarea></textarea>
+					</form>"
 					)
 		);
 		
