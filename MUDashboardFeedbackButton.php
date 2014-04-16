@@ -170,6 +170,7 @@ class MUDashboardFeedbackButton{
 	 * @return    null    Return early if no settings page is registered.
 	 */
 	public function enqueue_admin_scripts() {
+		wp_enqueue_script($this->plugin_slug . "-toolbar-script", plugins_url("js/mu-dashboard-feedback-button-toolbar.js", __FILE__), array("jquery"), $this->version);
 
 		if (!isset($this->plugin_screen_hook_suffix)) {
 			return;
@@ -248,11 +249,10 @@ class MUDashboardFeedbackButton{
 		// Add :) button to the toolbar
 		$args = array(
 				'id'    => 'feedback_button_positive',
-				'title' =>  __( 'Positive feedback', $this->plugin_slug ),
+				'title' =>  __( 'What I liked is...', $this->plugin_slug ),
 				'parent' => 'feedback_button_group',
 				'meta'  => array( 
 					'class' => "feedback-button positive feedback-button-plugin",
-					//'html' => "<h2>:)</h2>"
 					)
 		);
 		
@@ -261,12 +261,13 @@ class MUDashboardFeedbackButton{
 		// Add positive feedback form to the :) button
 		$args = array(
 				'id'    => 'feedback_button_positive_form',
-				'title' =>  __( 'What did you like?', $this->plugin_slug ),
+				//'title' =>  __( 'What did you like?', $this->plugin_slug ),
 				'parent' => 'feedback_button_positive',
 				'meta'  => array( 
-					'class' => "feedback-button positive feedback-button-plugin",
-					'html' => "<form action='#' method='post'>
+					'class' => "feedback-form positive feedback-button-plugin",
+					'html' => "<form action='#' method='post' class='feedback-form'>
 					<textarea></textarea>
+					<button onclick='return false' class='submit'>". __( 'Shout it!', $this->plugin_slug ). "</button>
 					</form>"
 					)
 		);
@@ -276,9 +277,25 @@ class MUDashboardFeedbackButton{
 		// Add :( button to the toolbar
 		$args = array(
 				'id'    => 'feedback_button_negative',
-				'title' =>  __( 'Negative feedback', $this->plugin_slug ),
+				'title' =>  __( 'What I didn\'t like is...', $this->plugin_slug ),
 				'parent' => 'feedback_button_group',
 				'meta'  => array( 'class' => "feedback-button negative feedback-button-plugin" )
+		);
+		
+		$wp_admin_bar->add_node( $args );
+		
+		// Add negative feedback form to the :) button
+		$args = array(
+				'id'    => 'feedback_button_negative_form',
+				//'title' =>  __( 'What did you like?', $this->plugin_slug ),
+				'parent' => 'feedback_button_negative',
+				'meta'  => array( 
+					'class' => "feedback-form positive feedback-button-plugin",
+					'html' => "<form action='#' method='post' class='feedback-form'>
+					<textarea></textarea>
+					<button onclick='return false' class='submit'>". __( 'Shout it!', $this->plugin_slug ). "</button>
+					</form>"
+					)
 		);
 		
 		$wp_admin_bar->add_node( $args );

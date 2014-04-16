@@ -26,8 +26,11 @@ Lets you know what does your sub blog admin thinks about the network and other r
 
 == Changelog ==
 
+= 1.0.2 =
+* Updated toolbar styles
+
 = 1.0.1 =
-* Updated README
+* Updated README file
 
 = 1.0.0 =
 * Initial Commit

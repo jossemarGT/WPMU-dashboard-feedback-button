@@ -1,32 +1,72 @@
+/**
+ * MU Dashboard Feedback Button - Toolbar styles
+ *
+ * @author    jossemarGT <hello@jossemargt.com>
+ * @license   GPL-2.0
+ * @link      http://jossemargt.com
+ * @copyright 2014-04-13 _
+ */
+
+/** Button Group **/
 .feedback-button-group {
-	float: right;
+	/* float: right; */
+	margin: 0 10px!important;
 }
 
+/** Button styles **/
 .feedback-button {
 	position: relative;
-	margin-right: 5px !important; 
-	background-color: gray;
-	width: 34px;
 	cursor: pointer;
 }
 
 .feedback-button > .ab-item {
-	position: relative !important;
-	width: 8px !important; /* inherits padding: 0 10px;*/
-	background-color: transparent;
-	text-indent: -999em;
+	padding-left: 34px!important;
+	color: #fff!important;
+}
+
+.feedback-button.positive > .ab-item {
+	background-color: green !important;
+}
+
+.feedback-button.negative > .ab-item {
+	background-color: red !important;
+}
+
+.feedback-button > .ab-item:after {
+	content: '';
+	display: block;
+	position: absolute;
+	left: 6px;
+	top: 0;
+	width: 22px;
+	height: 26px;
 	background-image: url(../assets/icons-white.png);
-	background-repeat: no-repeat!important;
+	background-repeat: no-repeat;
 }
 
-.feedback-button:hover > .ab-item {
-	background-image: url(../assets/icons-white.png)!important;
+.feedback-button.positive > .ab-item:after {
+	background-position: 0 4px;
 }
 
-.feedback-button.positive .ab-item, .feedback-button.positive .ab-item:hover {
-	background-position: 0 1px;
+.feedback-button.negative > .ab-item:after {
+	background-position: -23px 4px;
 }
 
-.feedback-button.negative .ab-item, .feedback-button.negative .ab-item:hover {
-	background-position: -30px 1px!important;
+/** Form styles **/
+.feedback-button-group .ab-sub-wrapper {
+	padding: 0 10px!important;
+}
+
+.feedback-button-group .ab-sub-wrapper .ab-empty-item {
+	display: none!important;
+}
+
+.feedback-button-group .feedback-form {
+	text-align: right;
+}
+
+.feedback-button-group .feedback-form .submit {
+	display: inline-block;
+	border-radius: 7%!important;
+	padding: 0 5px !important;
 }
