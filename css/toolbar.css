@@ -13,6 +13,10 @@
 	margin: 0 10px!important;
 }
 
+.feedback-focus .ab-sub-wrapper {
+	display: block!important;
+}
+
 /** Button styles **/
 .feedback-button {
 	position: relative;
@@ -65,7 +69,12 @@
 	text-align: right;
 }
 
-.feedback-button-group .feedback-form .submit {
+.feedback-button-group .feedback-text {
+	line-height: 1.6em!important;
+	padding: 5px 0!important;
+}
+
+.feedback-button-group .feedback-submit {
 	display: inline-block;
 	border-radius: 7%!important;
 	padding: 0 5px !important;

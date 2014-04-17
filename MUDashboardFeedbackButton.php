@@ -23,7 +23,7 @@ class MUDashboardFeedbackButton{
 	 *
 	 * @var     string
 	 */
-	protected $version = "1.0.0";
+	protected $version = "1.0.3";
 
 	/**
 	 * Unique identifier of text domain (i18)
@@ -68,17 +68,12 @@ class MUDashboardFeedbackButton{
 		// Load admin style sheet and JavaScript.
 		add_action("admin_enqueue_scripts", array($this, "enqueue_admin_styles"));
 		add_action("admin_enqueue_scripts", array($this, "enqueue_admin_scripts"));
-
-		// Load public-facing style sheet and JavaScript.
-		// add_action("wp_enqueue_scripts", array($this, "enqueue_styles"));
-		// add_action("wp_enqueue_scripts", array($this, "enqueue_scripts"));
-
-		// Define custom functionality. Read more about actions and filters: http://codex.wordpress.org/Plugin_API#Hooks.2C_Actions_and_Filters
-		//add_action('admin_bar_menu', 'add_feebback_button', 1);
+		
+		// Append new elements to the admin toolbar
 		add_action( 'wp_before_admin_bar_render', array($this, 'add_feebback_button') );
 		
-		//add_action("TODO", array($this, "action_method_name"));
-		//add_filter("TODO", array($this, "filter_method_name"));
+		// Register ajax handler for feedback form
+		add_action( 'wp_ajax_site_admin_feedback', array($this, 'handle_site_admin_feedback') );
 
 	}
 
@@ -107,7 +102,6 @@ class MUDashboardFeedbackButton{
 	 * @param    boolean $network_wide    True if WPMU superadmin uses "Network Activate" action, false if WPMU is disabled or plugin is activated on an individual blog.
 	 */
 	public static function activate($network_wide) {
-		// TODO: Define activation functionality here
 		// Init DB table
 	}
 
@@ -119,7 +113,6 @@ class MUDashboardFeedbackButton{
 	 * @param    boolean $network_wide    True if WPMU superadmin uses "Network Deactivate" action, false if WPMU is disabled or plugin is deactivated on an individual blog.
 	 */
 	public static function deactivate($network_wide) {
-		// TODO: Define deactivation functionality here
 		// Drop DB table
 	}
 
@@ -170,7 +163,10 @@ class MUDashboardFeedbackButton{
 	 * @return    null    Return early if no settings page is registered.
 	 */
 	public function enqueue_admin_scripts() {
-		wp_enqueue_script($this->plugin_slug . "-toolbar-script", plugins_url("js/mu-dashboard-feedback-button-toolbar.js", __FILE__), array("jquery"), $this->version);
+		wp_enqueue_script($this->plugin_slug . "-toolbar-script", plugins_url("js/mu-dashboard-feedback-button.js", __FILE__), array("jquery"), $this->version);
+		
+		wp_localize_script( $this->plugin_slug . "-toolbar-script", "ajaxObject",
+            array( "ajax_url" => admin_url( "admin-ajax.php" ), "response_type" => "json" ) );
 
 		if (!isset($this->plugin_screen_hook_suffix)) {
 			return;
@@ -182,26 +178,6 @@ class MUDashboardFeedbackButton{
 				array("jquery"), $this->version);
 		}
 
-	}
-
-	/**
-	 * Register and enqueue public-facing style sheet.
-	 *
-	 * @since    1.0.0
-	 */
-	public function enqueue_styles() {
-		wp_enqueue_style($this->plugin_slug . "-plugin-styles", plugins_url("css/public.css", __FILE__), array(),
-			$this->version);
-	}
-
-	/**
-	 * Register and enqueues public-facing JavaScript files.
-	 *
-	 * @since    1.0.0
-	 */
-	public function enqueue_scripts() {
-		wp_enqueue_script($this->plugin_slug . "-plugin-script", plugins_url("js/public.js", __FILE__), array("jquery"),
-			$this->version);
 	}
 
 	/**
@@ -236,15 +212,18 @@ class MUDashboardFeedbackButton{
 	public function add_feebback_button() {
 		global $wp_admin_bar;
 		
+		// --- Toolbar section/group ---
 		// Add section/group to the toolbar
 		$args = array(
 				'id'    => 'feedback_button_group',
 				'title' => __( 'Feedback group', $this->plugin_slug ),
 				'group' => true,
 				'meta'  => array( 'class' => "feedback-button-group feedback-button-plugin" )
-		);
-			
+		);			
 		$wp_admin_bar->add_group( $args );
+		
+		
+		// --- Toolbar buttons ---
 		
 		// Add :) button to the toolbar
 		$args = array(
@@ -255,23 +234,6 @@ class MUDashboardFeedbackButton{
 					'class' => "feedback-button positive feedback-button-plugin",
 					)
 		);
-		
-		$wp_admin_bar->add_node( $args );
-		
-		// Add positive feedback form to the :) button
-		$args = array(
-				'id'    => 'feedback_button_positive_form',
-				//'title' =>  __( 'What did you like?', $this->plugin_slug ),
-				'parent' => 'feedback_button_positive',
-				'meta'  => array( 
-					'class' => "feedback-form positive feedback-button-plugin",
-					'html' => "<form action='#' method='post' class='feedback-form'>
-					<textarea></textarea>
-					<button onclick='return false' class='submit'>". __( 'Shout it!', $this->plugin_slug ). "</button>
-					</form>"
-					)
-		);
-		
 		$wp_admin_bar->add_node( $args );
 		
 		// Add :( button to the toolbar
@@ -281,24 +243,49 @@ class MUDashboardFeedbackButton{
 				'parent' => 'feedback_button_group',
 				'meta'  => array( 'class' => "feedback-button negative feedback-button-plugin" )
 		);
-		
 		$wp_admin_bar->add_node( $args );
+
 		
-		// Add negative feedback form to the :) button
+		// --- Toolbar forms ---
+		
+		// Generate form nonce
+		$nonce =	wp_nonce_field( 'site_admin_feedback', 'site_admin_feedback_nonce', false, false );
+		
+		// Form node args
 		$args = array(
-				'id'    => 'feedback_button_negative_form',
-				//'title' =>  __( 'What did you like?', $this->plugin_slug ),
-				'parent' => 'feedback_button_negative',
-				'meta'  => array( 
-					'class' => "feedback-form positive feedback-button-plugin",
-					'html' => "<form action='#' method='post' class='feedback-form'>
-					<textarea></textarea>
-					<button onclick='return false' class='submit'>". __( 'Shout it!', $this->plugin_slug ). "</button>
-					</form>"
-					)
+			'meta'  => array( 
+				'class' => "feedback-form positive feedback-button-plugin",
+				'html' => "<form class='feedback-form'>" . $nonce .
+				"<textarea name='feedback-text' class='feedback-text' placeholder='". __( 'Let us know what you think', $this->plugin_slug )."'></textarea>
+				<button type='submit' class='feedback-submit'>". __( 'Shout it!', $this->plugin_slug ). "</button>
+				</form>"
+			)
 		);
 		
+		// Add positive feedback form to the :) button
+		$args["id"] = "feedback_button_positive_form";
+		$args["parent"] = "feedback_button_positive";
 		$wp_admin_bar->add_node( $args );
+		
+		// Add negative feedback form to the :( button
+		$args["id"] = "feedback_button_negativ_form";
+		$args["parent"] = "feedback_button_negative";
+		$wp_admin_bar->add_node( $args );
+	}
+	
+
+	/**
+	 * Handles the feedback form's submitted data via ajax
+	 *
+	 * @since    1.0.3
+	 */
+	public function handle_site_admin_feedback() {
+		$nonce = $_POST['site_admin_feedback_nonce'];
+		if (empty($_POST) || !wp_verify_nonce($nonce, 'site_admin_feedback') ) die('Security check');
+				
+		$the_site = get_current_site();
+		wp_send_json($the_site);
+		die();
 	}
 	
 	/**
