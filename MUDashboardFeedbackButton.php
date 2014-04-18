@@ -23,7 +23,7 @@ class MUDashboardFeedbackButton{
 	 *
 	 * @var     string
 	 */
-	protected $version = "1.0.3";
+	protected static $version = "1.0.4";
 
 	/**
 	 * Unique identifier of text domain (i18)
@@ -61,9 +61,12 @@ class MUDashboardFeedbackButton{
 
 		// Load plugin text domain
 		add_action("init", array($this, "load_plugin_textdomain"));
+		
+		// Check DB updates 
+		add_action( 'plugins_loaded', array($this, "update_db_check") );
 
-		// Add the options page and menu item.
-		add_action("admin_menu", array($this, "add_plugin_admin_menu"));
+		// Add the options page and menu item, only visible at network dashboard
+		add_action("network_admin_menu", array($this, "add_plugin_admin_menu"));
 
 		// Load admin style sheet and JavaScript.
 		add_action("admin_enqueue_scripts", array($this, "enqueue_admin_styles"));
@@ -102,7 +105,33 @@ class MUDashboardFeedbackButton{
 	 * @param    boolean $network_wide    True if WPMU superadmin uses "Network Activate" action, false if WPMU is disabled or plugin is activated on an individual blog.
 	 */
 	public static function activate($network_wide) {
-		// Init DB table
+		
+		// Check if it's a network wide installation,
+		if ( $network_wide === false ) {
+			deactivate_plugins(basename(__FILE__)); 
+			wp_die("Sorry, but you can't run this plugin, it requires to be \"Network Activated\" as WPMU superadmin.", "MU Dashboard Feedback Buttons - Activation" , array( 'response'=>403, 'back_link'=>true )); 
+		}
+		
+		// Init DB Table
+		global $wpdb;
+		
+		$table_name = $wpdb->prefix . "mu_usr_feedback";
+		
+		$sql = "CREATE TABLE $table_name (
+		id mediumint(9) NOT NULL AUTO_INCREMENT,
+		timelog datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+		siteid mediumint(9) NOT NULL,
+		sitename tinytext DEFAULT '' NOT NULL,
+		sitedomain VARCHAR(200) DEFAULT '' NOT NULL,
+		feedback text NOT NULL,
+		UNIQUE KEY id (id)
+    );";
+		
+		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+		dbDelta( $sql ); // Install or update table
+		
+		// Save current plugin's version as option
+		add_option( "mudashfeedback_db_version", self::$version );
 	}
 
 	/**
@@ -113,7 +142,19 @@ class MUDashboardFeedbackButton{
 	 * @param    boolean $network_wide    True if WPMU superadmin uses "Network Deactivate" action, false if WPMU is disabled or plugin is deactivated on an individual blog.
 	 */
 	public static function deactivate($network_wide) {
-		// Drop DB table
+		update_option( "mudashfeedback_db_version", "0" );
+	}
+	
+	/**
+	 * Check after every load if the database table is updated.
+	 *
+	 * @since    1.0.4
+	 */
+	public function update_db_check() {
+    if (get_option( "mudashfeedback_db_version" ) != self::$version) {
+			update_option( "mudashfeedback_db_version", self::$version ); 
+			self::activate(true);
+		}
 	}
 
 	/**
@@ -140,7 +181,7 @@ class MUDashboardFeedbackButton{
 	public function enqueue_admin_styles() {
 		// Always load toolbar styles
 		wp_enqueue_style($this->plugin_slug . "-admin-toolbar-styles", plugins_url("css/toolbar.css", __FILE__), array(),
-										 $this->version);
+										 self::$version);
 		
 		if (!isset($this->plugin_screen_hook_suffix) ) {
 			return;
@@ -150,7 +191,7 @@ class MUDashboardFeedbackButton{
 		// Just load  when the super admin looks the plugin page
 		if ($screen->id == $this->plugin_screen_hook_suffix) {
 			wp_enqueue_style($this->plugin_slug . "-admin-styles", plugins_url("css/admin.css", __FILE__), array(),
-				$this->version);
+				self::$version);
 		}
 
 	}
@@ -163,7 +204,7 @@ class MUDashboardFeedbackButton{
 	 * @return    null    Return early if no settings page is registered.
 	 */
 	public function enqueue_admin_scripts() {
-		wp_enqueue_script($this->plugin_slug . "-toolbar-script", plugins_url("js/mu-dashboard-feedback-button.js", __FILE__), array("jquery"), $this->version);
+		wp_enqueue_script($this->plugin_slug . "-toolbar-script", plugins_url("js/mu-dashboard-feedback-button.js", __FILE__), array("jquery"), self::$version);
 		
 		wp_localize_script( $this->plugin_slug . "-toolbar-script", "ajaxObject",
             array( "ajax_url" => admin_url( "admin-ajax.php" ), "response_type" => "json" ) );
@@ -175,7 +216,7 @@ class MUDashboardFeedbackButton{
 		$screen = get_current_screen();
 		if ($screen->id == $this->plugin_screen_hook_suffix) {
 			wp_enqueue_script($this->plugin_slug . "-admin-script", plugins_url("js/mu-dashboard-feedback-button-admin.js", __FILE__),
-				array("jquery"), $this->version);
+				array("jquery"), self::$version);
 		}
 
 	}
@@ -186,9 +227,10 @@ class MUDashboardFeedbackButton{
 	 * @since    1.0.0
 	 */
 	public function add_plugin_admin_menu() {
-		$this->plugin_screen_hook_suffix = add_plugins_page(
-			__("MU Dashboard Feedback - Administration", $this->plugin_slug), // Page Title
-			__("MU Dashboard Feedback", $this->plugin_slug), //Menu title
+		$this->plugin_screen_hook_suffix = add_submenu_page(
+			"users.php",
+			__("Network Users Feedback - [MU Dashboard Feedback]", $this->plugin_slug), // Page Title
+			__("Network Users Feedback", $this->plugin_slug), //Menu title
 			"manage_network", // Capability
 			$this->plugin_slug, // slug
 			array($this, "display_plugin_admin_page") //callback
@@ -287,31 +329,4 @@ class MUDashboardFeedbackButton{
 		wp_send_json($the_site);
 		die();
 	}
-	
-	/**
-	 * NOTE:  Actions are points in the execution of a page or process
-	 *        lifecycle that WordPress fires.
-	 *
-	 *        WordPress Actions: http://codex.wordpress.org/Plugin_API#Actions
-	 *        Action Reference:  http://codex.wordpress.org/Plugin_API/Action_Reference
-	 *
-	 * @since    1.0.0
-	 */
-	public function action_method_name() {
-		// TODO: Define your action hook callback here
-	}
-
-	/**
-	 * NOTE:  Filters are points of execution in which WordPress modifies data
-	 *        before saving it or sending it to the browser.
-	 *
-	 *        WordPress Filters: http://codex.wordpress.org/Plugin_API#Filters
-	 *        Filter Reference:  http://codex.wordpress.org/Plugin_API/Filter_Reference
-	 *
-	 * @since    1.0.0
-	 */
-	public function filter_method_name() {
-		// TODO: Define your filter hook callback here
-	}
-
 }

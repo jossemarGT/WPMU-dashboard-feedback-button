@@ -4,7 +4,7 @@ Donate link: http://jossemargt.com
 Tags: multisite, feedback, admin toolbar
 Requires at least: 3.5.1
 Tested up to: 3.8.1
-Stable tag: 1.0.0
+Stable tag: 1.0.4
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,9 +16,9 @@ Lets you know what does your sub blog admin thinks about the network and other r
 
 == Installation ==
 
-1. Upload 'MU-dashboard-feedback-button' to the `/wp-content/plugins/` directory.
-2. Network activate it through the "Plugins" menu in WordPress Network dashboard.
-3. Check the feedback of your sub-site admin in Plugins > MU Dashboard Feedback
+1. Upload 'MU-dashboard-feedback-button' to the '/wp-content/plugins/' directory.
+2. Network activate it through the 'Plugins' menu in WordPress Network dashboard.
+3. Check the feedback of your sub-site admins in 'Network Dashboard > Users >  Network Users Feedback'
 
 == Screenshots ==
 
@@ -26,6 +26,18 @@ Lets you know what does your sub blog admin thinks about the network and other r
 2. Feedback form.
 
 == Changelog ==
+
+= 1.1.0 = 
+* Plugin's uninstall script (drop DB Table).
+* The network feedback can be checked in the plugin's page.
+* Feedback written in plugin's DB table
+
+= 1.0.4 =
+* Plugin's deactivation script (doesn't drop DB table).
+* DB table update on plugin's update.
+* Creation of DB table on plugin's activation.
+* Plugin's page is now available via 'Network Dashboard > Users >  Network Users Feedback'.
+* The plugin can be only network activated.
 
 = 1.0.3 =
 * Add > Ajax handling via admin-ajax.php and nonces
