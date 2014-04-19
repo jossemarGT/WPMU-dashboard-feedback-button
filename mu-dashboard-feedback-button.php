@@ -14,7 +14,7 @@
  * Plugin Name: MU Dashboard Feedback Button
  * Plugin URI:  http://jossemargt.com
  * Description: Let you know what does your sub-blog admin thinks about the network
- * Version:     1.0.0
+ * Version:     1.0.5
  * Author:      jossemarGT
  * Author URI:  http://jossemargt.com
  * Text Domain: mu-dashboard-feedback-button-locale

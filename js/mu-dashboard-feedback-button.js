@@ -25,17 +25,19 @@
 			evt.stopPropagation();
 			evt.preventDefault();
 			
-			var $this = $(this);
+			var $this = $(this),
+					feedbackType = $this.parent().hasClass("positive") ? "positive" : "negative";
 
-			var cdata = $this.serialize() + "&action=site_admin_feedback";
+			var cdata = $this.serialize() + "&action=site_admin_feedback&feedback-type=" + feedbackType ;
 			
 			$.ajax({
 				type : "post",
-				//dataType : "json",
+				dataType : "json",
 				url : ajaxObject.ajax_url,
 				data : cdata,
 				success: function(response) {
-					console.log( response );
+					alert(response.message)
+					console.log( response.site_obj );
 					$this[0].reset();
 				}
 			});

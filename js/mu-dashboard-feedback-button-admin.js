@@ -1,9 +1,6 @@
 /**
  * This is the main javascript file for the MU-dashboard-feedback-button plugin's main administration view.
  *
- * This includes the header, options, and other information that should provide
- * The User Interface to the end administrator.
- *
  * @package   mu-dashboard-feedback-button
  * @author    jossemarGT <hello@jossemargt.com>
  * @license   GPL-2.0
@@ -15,5 +12,6 @@
 	"use strict";
 	$(function () {
 		// Place your administration-specific JavaScript here
+		console.log("Admin script loaded :D")
 	});
 }(jQuery));

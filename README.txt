@@ -4,7 +4,7 @@ Donate link: http://jossemargt.com
 Tags: multisite, feedback, admin toolbar
 Requires at least: 3.5.1
 Tested up to: 3.8.1
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -30,7 +30,10 @@ Lets you know what does your sub blog admin thinks about the network and other r
 = 1.1.0 = 
 * Plugin's uninstall script (drop DB Table).
 * The network feedback can be checked in the plugin's page.
-* Feedback written in plugin's DB table
+
+= 1.0.5 =
+* plugin_screen_hook_suffix network fix.
+* Feedback written in plugin's DB table.
 
 = 1.0.4 =
 * Plugin's deactivation script (doesn't drop DB table).

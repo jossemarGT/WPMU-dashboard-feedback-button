@@ -23,7 +23,7 @@ class MUDashboardFeedbackButton{
 	 *
 	 * @var     string
 	 */
-	protected static $version = "1.0.4";
+	protected static $version = "1.0.5";
 
 	/**
 	 * Unique identifier of text domain (i18)
@@ -53,6 +53,15 @@ class MUDashboardFeedbackButton{
 	protected $plugin_screen_hook_suffix = null;
 
 	/**
+	 * Slug of the plugin screen.
+	 *
+	 * @since    1.0.0
+	 *
+	 * @var      string
+	 */
+	public static $db_table_name_no_prefix = "mu_usr_feedback";
+	
+	/**
 	 * Initialize the plugin by setting localization, filters, and administration functions.
 	 *
 	 * @since     1.0.0
@@ -66,8 +75,10 @@ class MUDashboardFeedbackButton{
 		add_action( 'plugins_loaded', array($this, "update_db_check") );
 
 		// Add the options page and menu item, only visible at network dashboard
-		add_action("network_admin_menu", array($this, "add_plugin_admin_menu"));
-
+		if ( get_option( "mudashfeedback_db_version" )  ) {
+			add_action("network_admin_menu", array($this, "add_plugin_admin_menu"));
+		}
+		
 		// Load admin style sheet and JavaScript.
 		add_action("admin_enqueue_scripts", array($this, "enqueue_admin_styles"));
 		add_action("admin_enqueue_scripts", array($this, "enqueue_admin_scripts"));
@@ -115,7 +126,7 @@ class MUDashboardFeedbackButton{
 		// Init DB Table
 		global $wpdb;
 		
-		$table_name = $wpdb->prefix . "mu_usr_feedback";
+		$table_name = $wpdb->prefix . self::$db_table_name_no_prefix ;
 		
 		$sql = "CREATE TABLE $table_name (
 		id mediumint(9) NOT NULL AUTO_INCREMENT,
@@ -124,6 +135,7 @@ class MUDashboardFeedbackButton{
 		sitename tinytext DEFAULT '' NOT NULL,
 		sitedomain VARCHAR(200) DEFAULT '' NOT NULL,
 		feedback text NOT NULL,
+		feedback_type VARCHAR(8) DEFAULT 'positive' NOT NULL,
 		UNIQUE KEY id (id)
     );";
 		
@@ -132,6 +144,7 @@ class MUDashboardFeedbackButton{
 		
 		// Save current plugin's version as option
 		add_option( "mudashfeedback_db_version", self::$version );
+		add_option( "mudashfeedback_network_enabled", true );
 	}
 
 	/**
@@ -142,7 +155,8 @@ class MUDashboardFeedbackButton{
 	 * @param    boolean $network_wide    True if WPMU superadmin uses "Network Deactivate" action, false if WPMU is disabled or plugin is deactivated on an individual blog.
 	 */
 	public static function deactivate($network_wide) {
-		update_option( "mudashfeedback_db_version", "0" );
+		delete_option( "mudashfeedback_db_version" );
+		delete_option( "mudashfeedback_network_enabled" );
 	}
 	
 	/**
@@ -152,8 +166,8 @@ class MUDashboardFeedbackButton{
 	 */
 	public function update_db_check() {
     if (get_option( "mudashfeedback_db_version" ) != self::$version) {
-			update_option( "mudashfeedback_db_version", self::$version ); 
 			self::activate(true);
+			update_option( "mudashfeedback_db_version", self::$version );
 		}
 	}
 
@@ -214,6 +228,7 @@ class MUDashboardFeedbackButton{
 		}
 
 		$screen = get_current_screen();
+		
 		if ($screen->id == $this->plugin_screen_hook_suffix) {
 			wp_enqueue_script($this->plugin_slug . "-admin-script", plugins_url("js/mu-dashboard-feedback-button-admin.js", __FILE__),
 				array("jquery"), self::$version);
@@ -235,6 +250,10 @@ class MUDashboardFeedbackButton{
 			$this->plugin_slug, // slug
 			array($this, "display_plugin_admin_page") //callback
 		);
+		
+		if ( get_option( "mudashfeedback_db_version" ) ) {
+			$this->plugin_screen_hook_suffix .= "-network" ;
+		}
 	}
 
 	/**
@@ -253,6 +272,12 @@ class MUDashboardFeedbackButton{
 	 */	
 	public function add_feebback_button() {
 		global $wp_admin_bar;
+		
+		// Only visible for site admins and super admins
+		if ( ! current_user_can('manage_options') )
+			return ;
+		
+		// TODO: Check user roles visibility, with the options
 		
 		// --- Toolbar section/group ---
 		// Add section/group to the toolbar
@@ -310,8 +335,9 @@ class MUDashboardFeedbackButton{
 		$wp_admin_bar->add_node( $args );
 		
 		// Add negative feedback form to the :( button
-		$args["id"] = "feedback_button_negativ_form";
+		$args["id"] = "feedback_button_negative_form";
 		$args["parent"] = "feedback_button_negative";
+		$args["meta"]["class"] = "feedback-form negative feedback-button-plugin";
 		$wp_admin_bar->add_node( $args );
 	}
 	
@@ -322,11 +348,31 @@ class MUDashboardFeedbackButton{
 	 * @since    1.0.3
 	 */
 	public function handle_site_admin_feedback() {
-		$nonce = $_POST['site_admin_feedback_nonce'];
-		if (empty($_POST) || !wp_verify_nonce($nonce, 'site_admin_feedback') ) die('Security check');
-				
+		$nonce = $_POST["site_admin_feedback_nonce"];
+		if (empty($_POST) || !wp_verify_nonce($nonce, "site_admin_feedback") ) 
+			die( __( "Security check", $this->plugin_slug ) );
+		
+		global $wpdb;
 		$the_site = get_current_site();
-		wp_send_json($the_site);
+		$clean_feedback = sanitize_text_field($_POST["feedback-text"]);
+		$clean_feedback_type = sanitize_text_field($_POST["feedback-type"]);
+		
+		$table_name = $wpdb->prefix . self::$db_table_name_no_prefix ;
+		$rows_affected = $wpdb->insert( $table_name, array( 
+			"timelog" => current_time("mysql"),
+			"siteid" => $the_site->id,
+			"sitename" => $the_site->site_name,
+			"sitedomain" => $the_site->domain,
+			"feedback" => $clean_feedback,
+			"feedback_type" => $clean_feedback_type
+		));
+		
+		$response = array(
+			"message" => __( "Thanks for your feedback", $this->plugin_slug ),
+			"site_obj" => $the_site
+		);
+		
+		wp_send_json($response);
 		die();
 	}
 }
