@@ -32,6 +32,9 @@ Lets you know what does your sub blog admin thinks about the network and other r
 * The network feedback can be checked in the plugin's page.
 
 = 1.0.5 =
+* Basic template rendering
+
+= 1.0.5 =
 * plugin_screen_hook_suffix network fix.
 * Feedback written in plugin's DB table.
 

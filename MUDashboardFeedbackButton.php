@@ -9,6 +9,8 @@
  * @copyright 2014-04-13 _
  */
 
+require_once(plugin_dir_path(__FILE__) . "/views/ViewManager.php");
+
 /**
  * MU-dashboard-feedback-button class.
  *
@@ -231,7 +233,7 @@ class MUDashboardFeedbackButton{
 		
 		if ($screen->id == $this->plugin_screen_hook_suffix) {
 			wp_enqueue_script($this->plugin_slug . "-admin-script", plugins_url("js/mu-dashboard-feedback-button-admin.js", __FILE__),
-				array("jquery"), self::$version);
+				array("backbone"), self::$version);
 		}
 
 	}
@@ -262,7 +264,7 @@ class MUDashboardFeedbackButton{
 	 * @since    1.0.0
 	 */
 	public function display_plugin_admin_page() {
-		include_once("views/admin.php");
+		ViewManager::render("admin.tpl.php");
 	}
 
 	/**
@@ -316,16 +318,13 @@ class MUDashboardFeedbackButton{
 		// --- Toolbar forms ---
 		
 		// Generate form nonce
-		$nonce =	wp_nonce_field( 'site_admin_feedback', 'site_admin_feedback_nonce', false, false );
+		$nonce = wp_nonce_field( 'site_admin_feedback', 'site_admin_feedback_nonce', false, false );
 		
 		// Form node args
 		$args = array(
 			'meta'  => array( 
 				'class' => "feedback-form positive feedback-button-plugin",
-				'html' => "<form class='feedback-form'>" . $nonce .
-				"<textarea name='feedback-text' class='feedback-text' placeholder='". __( 'Let us know what you think', $this->plugin_slug )."'></textarea>
-				<button type='submit' class='feedback-submit'>". __( 'Shout it!', $this->plugin_slug ). "</button>
-				</form>"
+				'html' => ViewManager::partialRender("feedback_form.tpl.php", array( "nonce_field" => $nonce, "locale_slug" => $this->plugin_slug ))
 			)
 		);
 		
