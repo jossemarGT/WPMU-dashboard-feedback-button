@@ -25,7 +25,7 @@ class MUDashboardFeedbackButton{
 	 *
 	 * @var     string
 	 */
-	protected static $version = "1.0.5";
+	protected static $version = "1.0.6";
 
 	/**
 	 * Unique identifier of text domain (i18)
