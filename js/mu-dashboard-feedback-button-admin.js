@@ -11,7 +11,35 @@
 (function ($) {
 	"use strict";
 	$(function () {
-		// Place your administration-specific JavaScript here
-		console.log("Admin script loaded :D")
+		
+		// UI Setup
+		$('#verticalTab').easyResponsiveTabs({
+			type: 'vertical',
+			width: 'auto',
+			fit: true
+		});
+		
+		var ajaxPreset = {
+			feedback_offset : 0,
+			feedback_type: "positive",
+			feedback_limit: 10,
+			feedback_showuread: "n",
+			action : "fetch_feedback"
+		}
+		
+		var doAjaxCall = function () {
+			$.ajax({
+				type : "post",
+				//dataType : "json",
+				url : ajaxObject.ajax_url,
+				data : ajaxPreset,
+				success: function(response) {
+					console.log( response );
+				}
+			});
+		}
+		
+		doAjaxCall();
+		
 	});
 }(jQuery));

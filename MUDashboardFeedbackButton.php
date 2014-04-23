@@ -25,7 +25,7 @@ class MUDashboardFeedbackButton{
 	 *
 	 * @var     string
 	 */
-	protected static $version = "1.0.6";
+	protected static $version = "1.1.0";
 
 	/**
 	 * Unique identifier of text domain (i18)
@@ -77,7 +77,7 @@ class MUDashboardFeedbackButton{
 		add_action( 'plugins_loaded', array($this, "update_db_check") );
 
 		// Add the options page and menu item, only visible at network dashboard
-		if ( get_option( "mudashfeedback_db_version" )  ) {
+		if ( get_site_option( "mudashfeedback_db_version" )  ) {
 			add_action("network_admin_menu", array($this, "add_plugin_admin_menu"));
 		}
 		
@@ -90,6 +90,8 @@ class MUDashboardFeedbackButton{
 		
 		// Register ajax handler for feedback form
 		add_action( 'wp_ajax_site_admin_feedback', array($this, 'handle_site_admin_feedback') );
+		add_action( 'wp_ajax_fetch_feedback', array($this, 'fetch_admin_feedback') );
+		
 
 	}
 
@@ -138,6 +140,7 @@ class MUDashboardFeedbackButton{
 		sitedomain VARCHAR(200) DEFAULT '' NOT NULL,
 		feedback text NOT NULL,
 		feedback_type VARCHAR(8) DEFAULT 'positive' NOT NULL,
+		feadback_read VARCHAR(1) DEFAULT 'N' NOT NULL,
 		UNIQUE KEY id (id)
     );";
 		
@@ -145,8 +148,8 @@ class MUDashboardFeedbackButton{
 		dbDelta( $sql ); // Install or update table
 		
 		// Save current plugin's version as option
-		add_option( "mudashfeedback_db_version", self::$version );
-		add_option( "mudashfeedback_network_enabled", true );
+		add_site_option( "mudashfeedback_db_version", self::$version );
+		add_site_option( "mudashfeedback_network_enabled", true );
 	}
 
 	/**
@@ -157,8 +160,8 @@ class MUDashboardFeedbackButton{
 	 * @param    boolean $network_wide    True if WPMU superadmin uses "Network Deactivate" action, false if WPMU is disabled or plugin is deactivated on an individual blog.
 	 */
 	public static function deactivate($network_wide) {
-		delete_option( "mudashfeedback_db_version" );
-		delete_option( "mudashfeedback_network_enabled" );
+		delete_site_option( "mudashfeedback_db_version" );
+		delete_site_option( "mudashfeedback_network_enabled" );
 	}
 	
 	/**
@@ -167,9 +170,9 @@ class MUDashboardFeedbackButton{
 	 * @since    1.0.4
 	 */
 	public function update_db_check() {
-    if (get_option( "mudashfeedback_db_version" ) != self::$version) {
+    if (get_site_option( "mudashfeedback_db_version" ) != self::$version) {
 			self::activate(true);
-			update_option( "mudashfeedback_db_version", self::$version );
+			update_site_option( "mudashfeedback_db_version", self::$version );
 		}
 	}
 
@@ -233,7 +236,9 @@ class MUDashboardFeedbackButton{
 		
 		if ($screen->id == $this->plugin_screen_hook_suffix) {
 			wp_enqueue_script($this->plugin_slug . "-admin-script", plugins_url("js/mu-dashboard-feedback-button-admin.js", __FILE__),
-				array("backbone"), self::$version);
+				array("jquery"), self::$version);
+			wp_enqueue_script("easy-accordion-tabs-jplugin", plugins_url("js/easyResponsiveTabs.js", __FILE__),
+				array("jquery"));
 		}
 
 	}
@@ -372,6 +377,50 @@ class MUDashboardFeedbackButton{
 		);
 		
 		wp_send_json($response);
+		die();
+	}
+	
+	/**
+	 * Fetch new feedback from DB via ajax call
+	 *
+	 * @since    1.0.3
+	 */
+	public function fetch_admin_feedback() {
+		
+		//Only the super admin can check the feedback
+		if ( ! current_user_can("manage_network") ) 
+			die(__( "Access denied.", $this->plugin_slug ));
+		
+		global $wpdb;
+		$offset = filter_var($_POST["feedback_offset"], FILTER_SANITIZE_NUMBER_INT);
+		$clean_feedback_type = sanitize_text_field($_POST["feedback_type"]);
+		$limit = isset($_POST["feedback-limit"]) ? $_POST["feedback_limit"] : 10 ;
+		$show_unread = isset($_POST["feedback-showuread"]) && $_POST["feedback_showuread"] == "y" ;
+		
+		$table_name = $wpdb->prefix . self::$db_table_name_no_prefix ;
+		
+		if ( $show_unread ) {
+			$rows = $wpdb->get_results( 
+				" 
+				SELECT * 
+				FROM $table_name
+				WHERE feedback_type = '$clean_feedback_type'
+				LIMIT $limit OFFSET $offset
+				"
+			, OBJECT );
+		} else {
+			$rows = $wpdb->get_results( 
+				" 
+				SELECT * 
+				FROM $table_name
+				WHERE feadback_read = 'N'
+					AND feedback_type = '$clean_feedback_type'
+				LIMIT $limit OFFSET $offset
+				"
+			, OBJECT );
+		}
+		
+		wp_send_json($rows);
 		die();
 	}
 }

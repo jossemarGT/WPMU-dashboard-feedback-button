@@ -31,6 +31,9 @@ Lets you know what does your sub blog admin thinks about the network and other r
 * Plugin's uninstall script (drop DB Table).
 * The network feedback can be checked in the plugin's page.
 
+= 1.0.7 =
+* Initial styles and js behavior.
+
 = 1.0.6 =
 * Basic template rendering
 
