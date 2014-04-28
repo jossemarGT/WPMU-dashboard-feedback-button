@@ -454,7 +454,7 @@ class MUDashboardFeedbackButton{
 	 *
 	 * @since    1.0.7
 	 */
-	protected function fetch_db_feedback ( args = array() ) {
+	protected function fetch_db_feedback ( $args = array() ) {
 	
 	}
 	
@@ -463,7 +463,7 @@ class MUDashboardFeedbackButton{
 	 *
 	 * @since    1.0.7
 	 */
-	protected function update_db_feedback ( args = array() ) {
+	protected function update_db_feedback ( $args = array() ) {
 	
 	}
 }
