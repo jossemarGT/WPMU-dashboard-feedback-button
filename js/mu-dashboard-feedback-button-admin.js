@@ -13,30 +13,41 @@
 	$(function () {
 		
 		// UI Setup
-		$('#verticalTab').easyResponsiveTabs({
+		$('#config-tab').easyResponsiveTabs({
 			type: 'vertical',
 			width: 'auto',
 			fit: true
 		});
 		
-		var ajaxPreset = {
-			feedback_offset : 0,
+		// logic
+		
+		// The feedbackPreset object is in the global scope, It have been created via wp_localize_script
+		var dataObject = {
+			feedback_page: 1,
 			feedback_type: "positive",
-			feedback_limit: 10,
-			feedback_showuread: "n",
-			action : "fetch_feedback"
+			feedback_showuread : "n",
+			action : feedbackPreset.actions.fetch
 		}
 		
-		var doAjaxCall = function () {
+
+		function doAjaxCall () {
+			
 			$.ajax({
 				type : "post",
-				//dataType : "json",
-				url : ajaxObject.ajax_url,
-				data : ajaxPreset,
+				dataType : "json",
+				url : feedbackPreset.ajax_url,
+				data : dataObject,
 				success: function(response) {
-					console.log( response );
+					console.log(response);
+					renderFeedback (response, response.feedback_type);
 				}
 			});
+		}
+		
+		function renderFeedback(data, ftype, parentType = "unread") {
+			var $parentContainer = parentType == "unread" ? $("#unread-feedback-tab") : $("#all-feedback-tab");
+			
+			$(".feedback-list." + ftype, $parentContainer).loadTemplate($("#row-template"), data );
 		}
 		
 		doAjaxCall();

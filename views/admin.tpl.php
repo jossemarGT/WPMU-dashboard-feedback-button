@@ -17,30 +17,27 @@
 	<?php screen_icon(); ?>
 	<h2><?php echo esc_html( get_admin_page_title() ); ?></h2>
 
-	<div id="verticalTab">
+	<div id="config-tab">
 		<ul class="resp-tabs-list">
-			<li>Unread Feedback</li>
-			<li>All</li>
-			<li>Configuration</li>
+			<li><?php _e("Unread Feedback", $locale_slug); ?></li>
+			<li><?php _e("All", $locale_slug); ?></li>
+			<li><?php _e("Configuration", $locale_slug); ?></li>
 		</ul>
 		
 		<div class="resp-tabs-container">
 			
-			<div class="ui-tab-panel column-container clearfix">
+			<div id="unread-feedback-tab" class="ui-tab-panel column-container clearfix">
 				
 				<div class="column-float half-size feedback-positive" >
-					<h3>Positive Feedback (4/100)</h3>
-					<ul class="feedback-list">
-						<li><input type="checkbox" class="feedback-check"><div id="feedback-1001" class="feedback-content">data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data data </div></li>
-						<li><input type="checkbox" class="feedback-check"><div id="feedback-1001" class="feedback-content">data</div></li>
-						<li><input type="checkbox" class="feedback-check"><div id="feedback-1001" class="feedback-content">data</div></li>
-						<li><input type="checkbox" class="feedback-check"><div id="feedback-1001" class="feedback-content">data</div></li>
+					<h3><?php _e("Positive Feedback", $locale_slug); ?></h3>
+					<ul class="feedback-list positive">
+						
 					</ul>
 				</div>
 				
 				<div class="column-float half-size feedback-negative" >
-					<h3>Negative Feedback (4/50)</h3>
-					<ul class="feedback-list">
+					<h3><?php _e("Negative Feedback", $locale_slug); ?></h3>
+					<ul class="feedback-list negative">
 						<li><input type="checkbox" class="feedback-check"><div id="feedback-1001" class="feedback-content">data</div></li>
 						<li><input type="checkbox" class="feedback-check"><div id="feedback-1001" class="feedback-content">data</div></li>
 						<li><input type="checkbox" class="feedback-check"><div id="feedback-1001" class="feedback-content">data</div></li>
@@ -49,12 +46,12 @@
 				</div>
 				
 				<div class="feedback-tools">
-					<button type="button">Mark as read</button>
+					<button type="button"><?php _e("Mark as read", $locale_slug); ?></button>
 				</div>
 				
 			</div>
 			
-			<div class="ui-tab-panel column-container">
+			<div id="all-feedback-tab" class="ui-tab-panel column-container">
 				
 				<div class="column-float half-size feedback-positive" >
 					<h3>Positive Feedback (4/100)</h3>
@@ -78,10 +75,34 @@
 				
 			</div>
 			
-			<div>
-				<p>Suspendisse blandit velit Integer laoreet placerat suscipit. Sed sodales scelerisque commodo. Nam porta cursus lectus. Proin nunc erat, gravida a facilisis quis, ornare id lectus. Proin consectetur nibh quis Integer laoreet placerat suscipit. Sed sodales scelerisque commodo. Nam porta cursus lectus. Proin nunc erat, gravida a facilisis quis, ornare id lectus. Proin consectetur nibh quis urna gravid urna gravid eget erat suscipit in malesuada odio venenatis.</p>
+			<div id="plugin-config-tab" class="ui-tab-panel">
+				
+				<form method="post" action="#">
+					<fieldset>
+						<legend><?php _e("Feedback review page options", $locale_slug); ?></legend>
+						<label for="feedback-page-size"><?php _e("Max page size", $locale_slug); ?> </label>
+						<input type="number" id="feedback-page-size" name="feedback-page-size" />
+					</fieldset>
+					
+					<fieldset>
+						<legend><?php _e("Toolbar buttons options", $locale_slug); ?></legend>
+						<label for="disable-feedback-form"><?php _e("Disable feedback buttons from toolbar", $locale_slug); ?> </label>
+						<input type="checkbox" id="disable-feedback-form" name="disable-feedback-form" />
+					</fieldset>
+					
+					<button type="submit"><?php _e("Save changes", $locale_slug); ?></button>
+				</form>
+				
 			</div>
 		</div>
 	</div>
 
 </div>
+
+<!-- Datarow tpl -->
+<script type="text/html" id="row-template">
+    <li data-time="feedback_timelog">
+			<input name="check-mark-read" type="checkbox" class="feedback-check" data-value="id">
+			<div class="feedback-content" data-content="feedback" ></div>
+		</li>
+</script>

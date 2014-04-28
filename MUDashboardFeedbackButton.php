@@ -25,7 +25,7 @@ class MUDashboardFeedbackButton{
 	 *
 	 * @var     string
 	 */
-	protected static $version = "1.1.0";
+	protected static $version = "1.0.7";
 
 	/**
 	 * Unique identifier of text domain (i18)
@@ -77,8 +77,10 @@ class MUDashboardFeedbackButton{
 		add_action( 'plugins_loaded', array($this, "update_db_check") );
 
 		// Add the options page and menu item, only visible at network dashboard
-		if ( get_site_option( "mudashfeedback_db_version" )  ) {
+		if ( get_site_option( "mudashfeedback_network_enabled" )  ) {
 			add_action("network_admin_menu", array($this, "add_plugin_admin_menu"));
+		} else {
+			add_action("users", array($this, "add_plugin_admin_menu"));
 		}
 		
 		// Load admin style sheet and JavaScript.
@@ -86,12 +88,14 @@ class MUDashboardFeedbackButton{
 		add_action("admin_enqueue_scripts", array($this, "enqueue_admin_scripts"));
 		
 		// Append new elements to the admin toolbar
-		add_action( 'wp_before_admin_bar_render', array($this, 'add_feebback_button') );
+		if( ! get_site_option("mudashfeedback_deactive_buttons") ) {
+			add_action( 'wp_before_admin_bar_render', array($this, 'add_feebback_button') );
+		}
 		
 		// Register ajax handler for feedback form
 		add_action( 'wp_ajax_site_admin_feedback', array($this, 'handle_site_admin_feedback') );
 		add_action( 'wp_ajax_fetch_feedback', array($this, 'fetch_admin_feedback') );
-		
+		add_action( 'wp_ajax_form_options', array($this, 'fetch_admin_feedback') );
 
 	}
 
@@ -150,6 +154,8 @@ class MUDashboardFeedbackButton{
 		// Save current plugin's version as option
 		add_site_option( "mudashfeedback_db_version", self::$version );
 		add_site_option( "mudashfeedback_network_enabled", true );
+		add_site_option( "mudashfeedback_feedback_page_size", 10 );
+		add_site_option( "mudashfeedback_deactive_buttons", false );
 	}
 
 	/**
@@ -160,8 +166,14 @@ class MUDashboardFeedbackButton{
 	 * @param    boolean $network_wide    True if WPMU superadmin uses "Network Deactivate" action, false if WPMU is disabled or plugin is deactivated on an individual blog.
 	 */
 	public static function deactivate($network_wide) {
-		delete_site_option( "mudashfeedback_db_version" );
-		delete_site_option( "mudashfeedback_network_enabled" );
+		
+		if ($network_wide) {
+			delete_site_option( "mudashfeedback_db_version" );
+			delete_site_option( "mudashfeedback_network_enabled" );
+			delete_site_option( "mudashfeedback_feedback_page_size");
+			delete_site_option( "mudashfeedback_deactive_buttons");
+		} 
+
 	}
 	
 	/**
@@ -235,10 +247,20 @@ class MUDashboardFeedbackButton{
 		$screen = get_current_screen();
 		
 		if ($screen->id == $this->plugin_screen_hook_suffix) {
-			wp_enqueue_script($this->plugin_slug . "-admin-script", plugins_url("js/mu-dashboard-feedback-button-admin.js", __FILE__),
-				array("jquery"), self::$version);
 			wp_enqueue_script("easy-accordion-tabs-jplugin", plugins_url("js/easyResponsiveTabs.js", __FILE__),
 				array("jquery"));
+			wp_enqueue_script("load-template-jquery", plugins_url("js/jquery.loadTemplate-1.4.3.min.js", __FILE__),
+				array("jquery"));
+			wp_enqueue_script($this->plugin_slug . "-admin-script", plugins_url("js/mu-dashboard-feedback-button-admin.js", __FILE__),
+				array("jquery"), self::$version);
+			
+			wp_localize_script( $this->plugin_slug . "-toolbar-script", "feedbackAjaxPreset",
+            array( 
+							"ajax_url" => admin_url( "admin-ajax.php" ),
+							"response_type" => "json",
+							"actions" => array( "fetch" => "fetch_feedback",
+																 "update" => "")
+						) );
 		}
 
 	}
@@ -269,7 +291,10 @@ class MUDashboardFeedbackButton{
 	 * @since    1.0.0
 	 */
 	public function display_plugin_admin_page() {
-		ViewManager::render("admin.tpl.php");
+		$tplVars = array(
+			"locale_slug" => $this->plugin_slug
+		);
+		ViewManager::render("admin.tpl.php", $tplVars);
 	}
 
 	/**
@@ -392,9 +417,9 @@ class MUDashboardFeedbackButton{
 			die(__( "Access denied.", $this->plugin_slug ));
 		
 		global $wpdb;
-		$offset = filter_var($_POST["feedback_offset"], FILTER_SANITIZE_NUMBER_INT);
+		$limit = get_site_option( "mudashfeedback_feedback_page_size" );
+		$offset = limit * filter_var($_POST["feedback_page"], FILTER_SANITIZE_NUMBER_INT);
 		$clean_feedback_type = sanitize_text_field($_POST["feedback_type"]);
-		$limit = isset($_POST["feedback-limit"]) ? $_POST["feedback_limit"] : 10 ;
 		$show_unread = isset($_POST["feedback-showuread"]) && $_POST["feedback_showuread"] == "y" ;
 		
 		$table_name = $wpdb->prefix . self::$db_table_name_no_prefix ;
@@ -422,5 +447,23 @@ class MUDashboardFeedbackButton{
 		
 		wp_send_json($rows);
 		die();
+	}
+	
+	/**
+	 * Fetch new feedback from DB
+	 *
+	 * @since    1.0.7
+	 */
+	protected function fetch_db_feedback ( args = array() ) {
+	
+	}
+	
+	/**
+	 * Fetch new feedback from DB
+	 *
+	 * @since    1.0.7
+	 */
+	protected function update_db_feedback ( args = array() ) {
+	
 	}
 }
