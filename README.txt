@@ -32,16 +32,9 @@ Lets you know what does your sub blog admin thinks about the network and other r
 * The network feedback can be checked in the plugin's page.
 
 = 1.0.7 =
-* Plugin page styles and js behavior.
-
-TODO:
-Send config object via wp_localize_script.
-Fetch feedback on ready and tab active.
-Don't fetch feedback twice
-Fetch feedback count
-Feedback pagination ( < > without any number should be nice )
-Feedback update (mark as read)
-Feedback sort after update (hide read ones, and fetch the same amount of feedback)
+* [plugin's page] Ajax feedback fetch.
+* [plugin's page] JS templates integration.
+* [plugin's page] Styles and js behavior.
 
 = 1.0.6 =
 * Basic template rendering.
