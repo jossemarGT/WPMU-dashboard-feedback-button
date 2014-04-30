@@ -254,7 +254,7 @@ class MUDashboardFeedbackButton{
 			wp_enqueue_script($this->plugin_slug . "-admin-script", plugins_url("js/mu-dashboard-feedback-button-admin.js", __FILE__),
 				array("jquery"), self::$version);
 			
-			wp_localize_script( $this->plugin_slug . "-toolbar-script", "feedbackAjaxPreset",
+			wp_localize_script( $this->plugin_slug . "-toolbar-script", "feedbackPreset",
             array( 
 							"ajax_url" => admin_url( "admin-ajax.php" ),
 							"response_type" => "json",
@@ -416,37 +416,22 @@ class MUDashboardFeedbackButton{
 		if ( ! current_user_can("manage_network") ) 
 			die(__( "Access denied.", $this->plugin_slug ));
 		
-		global $wpdb;
 		$limit = get_site_option( "mudashfeedback_feedback_page_size" );
-		$offset = limit * filter_var($_POST["feedback_page"], FILTER_SANITIZE_NUMBER_INT);
+		$offset = $limit * ( filter_var($_POST["feedback_page"], FILTER_SANITIZE_NUMBER_INT) - 1 ) ;
 		$clean_feedback_type = sanitize_text_field($_POST["feedback_type"]);
-		$show_unread = isset($_POST["feedback-showuread"]) && $_POST["feedback_showuread"] == "y" ;
+		$show_unread = isset($_POST["feedback-showuread"]) && $_POST["feedback_showuread"] == "Y" ;
 		
-		$table_name = $wpdb->prefix . self::$db_table_name_no_prefix ;
+		$args = array (
+			"attributes" => array (), // empty means *
+			"where" => array (
+				"feedback_type" => $clean_feedback_type,
+				"feadback_read" => $show_unread ? "Y" : "N"
+			),
+			"limit" => array( $limit, $offset )
+		);
 		
-		if ( $show_unread ) {
-			$rows = $wpdb->get_results( 
-				" 
-				SELECT * 
-				FROM $table_name
-				WHERE feedback_type = '$clean_feedback_type'
-				LIMIT $limit OFFSET $offset
-				"
-			, OBJECT );
-		} else {
-			$rows = $wpdb->get_results( 
-				" 
-				SELECT * 
-				FROM $table_name
-				WHERE feadback_read = 'N'
-					AND feedback_type = '$clean_feedback_type'
-				LIMIT $limit OFFSET $offset
-				"
-			, OBJECT );
-		}
-		
-		wp_send_json($rows);
-		die();
+		$result = $this->fetch_db_feedback($args);
+		wp_send_json($result);
 	}
 	
 	/**
@@ -455,7 +440,35 @@ class MUDashboardFeedbackButton{
 	 * @since    1.0.7
 	 */
 	protected function fetch_db_feedback ( $args = array() ) {
-	
+		global $wpdb;
+		$table_name = $wpdb->prefix . self::$db_table_name_no_prefix;
+		
+		$attributes = empty( $args["attributes"] ) ? "*" : implode(", ", $args["attributes"] );
+		$where = implode(
+			" AND " ,
+			array_map(function ($v, $k) { return $k . "= \"" . $v . "\""; },
+								$args["where"],
+								array_keys($args["where"])
+							 )
+		);
+		
+		$limit = isset( $args["limit"] ) ? $args["limit"] : false ;
+		/*
+		$rows = "SELECT $attributes " .
+			"FROM $table_name " .
+			( $where ? " WHERE $where " : "") .
+			( $limit ? " LIMIT $limit[0]" : "" ) .
+			( $limit && isset($limit[1]) ? " OFFSET $limit[1]" : "") ;
+		*/
+		$rows = $wpdb->get_results( 
+			"SELECT $attributes " .
+			"FROM $table_name " .
+			( $where ? " WHERE $where " : "") .
+			( $limit ? " LIMIT $limit[0]" : "" ) .
+			( $limit && isset($limit[1]) ? " OFFSET $limit[1]" : "" ) 
+		, OBJECT );
+
+		return $rows;
 	}
 	
 	/**
@@ -464,6 +477,21 @@ class MUDashboardFeedbackButton{
 	 * @since    1.0.7
 	 */
 	protected function update_db_feedback ( $args = array() ) {
-	
+		global $wpdb;
+		$table_name = $wpdb->prefix . self::$db_table_name_no_prefix;
+
+		$attributes = empty( $args["attributes"] ) ? "*" : implode(", ", $args["attributes"] );
+		$where = implode(" AND ", $args["where"] );
+		$limit = isset( $args["limit"] ) ? $args["limit"] : false ;
+		
+		$rows = $wpdb->get_results( 
+			"SELECT $attributes " .
+			"FROM $table_name " .
+			( $where ? " WHERE $where " : "") .
+			( $limit ? " LIMIT $limit[0]" : "" ) .
+			( $limit && isset($limit[1]) ? " OFFSET $limit[1]" : "" ) 
+		, OBJECT );
+		
+		return $rows;
 	}
 }

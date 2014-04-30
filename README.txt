@@ -32,6 +32,7 @@ Lets you know what does your sub blog admin thinks about the network and other r
 * The network feedback can be checked in the plugin's page.
 
 = 1.0.7 =
+* Improve db queries
 * [plugin's page] Ajax feedback fetch.
 * [plugin's page] JS templates integration.
 * [plugin's page] Styles and js behavior.

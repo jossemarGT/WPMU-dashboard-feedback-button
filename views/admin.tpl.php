@@ -101,8 +101,8 @@
 
 <!-- Datarow tpl -->
 <script type="text/html" id="row-template">
-    <li data-time="feedback_timelog">
+    <li data-time="timelog">
 			<input name="check-mark-read" type="checkbox" class="feedback-check" data-value="id">
-			<div class="feedback-content" data-content="feedback" ></div>
+			<div class="feedback-content" data-content-prepend="feedback" ><span class="feedback-author-sitename" data-content="sitename"></span></div>
 		</li>
 </script>

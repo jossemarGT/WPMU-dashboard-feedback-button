@@ -46,6 +46,13 @@
 	width: 100%;
 }
 
+.feedback-author-sitename {
+	display: block;
+	margin: 5px 0;
+	text-align: right;
+	color: #7e7e7e;
+}
+
 /** Media queries **/
 
 /* Smartphones */

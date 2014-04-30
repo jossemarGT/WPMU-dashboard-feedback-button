@@ -25,7 +25,7 @@
 		var dataObject = {
 			feedback_page: 1,
 			feedback_type: "positive",
-			feedback_showuread : "n",
+			feedback_showuread : "N",
 			action : feedbackPreset.actions.fetch
 		}
 		
@@ -34,12 +34,11 @@
 			
 			$.ajax({
 				type : "post",
-				dataType : "json",
+				dataType : feedbackPreset.response_type,
 				url : feedbackPreset.ajax_url,
 				data : dataObject,
 				success: function(response) {
-					console.log(response);
-					renderFeedback (response, response.feedback_type);
+					renderFeedback ( response, response[0].feedback_type );
 				}
 			});
 		}
