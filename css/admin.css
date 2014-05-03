@@ -39,6 +39,11 @@
 .feedback-list .feedback-content {
 	padding: 10px 0 5px 10px;
 	border-bottom: solid #cecece 1px;
+	word-break: break-all;
+	-webkit-hyphens: auto;
+   	 -moz-hyphens: auto;
+		 	-ms-hyphens: auto;
+          hyphens: auto;
 }
 
 .feedback-tools {

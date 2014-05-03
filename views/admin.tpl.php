@@ -31,17 +31,30 @@
 				<div class="column-float half-size feedback-positive" >
 					<h3><?php _e("Positive Feedback", $locale_slug); ?></h3>
 					<ul class="feedback-list positive">
-						
+						<?php foreach( $positive_unread as $row ): ?>
+						<li>
+							<input name="check-mark-read" type="checkbox" class="feedback-check" value="<?php echo $row->id; ?>">
+							<div class="feedback-content" data-time="<?php echo $row->timelog; ?>" > 
+								<?php echo $row->feedback; ?>
+								<span class="feedback-author-sitename"> <?php echo $row->sitename; ?> // <?php echo $row->timelog; ?> </span>
+							</div>
+						</li>
+						<?php endforeach; ?>
 					</ul>
 				</div>
 				
 				<div class="column-float half-size feedback-negative" >
 					<h3><?php _e("Negative Feedback", $locale_slug); ?></h3>
 					<ul class="feedback-list negative">
-						<li><input type="checkbox" class="feedback-check"><div id="feedback-1001" class="feedback-content">data</div></li>
-						<li><input type="checkbox" class="feedback-check"><div id="feedback-1001" class="feedback-content">data</div></li>
-						<li><input type="checkbox" class="feedback-check"><div id="feedback-1001" class="feedback-content">data</div></li>
-						<li><input type="checkbox" class="feedback-check"><div id="feedback-1001" class="feedback-content">data</div></li>
+						<?php foreach( $negative_unread as $row ): ?>
+						<li>
+							<input name="check-mark-read" type="checkbox" class="feedback-check" value="<?php echo $row->id; ?>">
+							<div class="feedback-content" data-time="<?php echo $row->timelog; ?>" > 
+								<?php echo $row->feedback; ?>
+								<span class="feedback-author-sitename"> <?php echo $row->sitename; ?> // <?php echo $row->timelog; ?> </span>
+							</div>
+						</li>
+						<?php endforeach; ?>
 					</ul>
 				</div>
 				
@@ -54,22 +67,30 @@
 			<div id="all-feedback-tab" class="ui-tab-panel column-container">
 				
 				<div class="column-float half-size feedback-positive" >
-					<h3>Positive Feedback (4/100)</h3>
-					<ul>
-						<li>data</li>
-						<li>data</li>
-						<li>data</li>
-						<li>data</li>
+					<h3>Positive Feedback</h3>
+					<ul class="feedback-list positive">
+						<?php foreach( $positive_all as $row ): ?>
+						<li>
+							<div class="feedback-content" data-id="<?php echo $row->id; ?>" data-time="<?php echo $row->timelog; ?>" > 
+								<?php echo $row->feedback; ?>
+								<span class="feedback-author-sitename"> <?php echo $row->sitename; ?> // <?php echo $row->timelog; ?> </span>
+							</div>
+						</li>
+						<?php endforeach; ?>
 					</ul>
 				</div>
 				
 				<div class="column-float half-size feedback-negative" >
 					<h3>Negative Feedback</h3>
-					<ul>
-						<li>data</li>
-						<li>data</li>
-						<li>data</li>
-						<li>data</li>
+					<ul class="feedback-list negative">
+						<?php foreach( $negative_all as $row ): ?>
+						<li>
+							<div class="feedback-content" data-id="<?php echo $row->id; ?>" data-time="<?php echo $row->timelog; ?>" > 
+								<?php echo $row->feedback; ?>
+								<span class="feedback-author-sitename"> <?php echo $row->sitename; ?> // <?php echo $row->timelog; ?> </span>
+							</div>
+						</li>
+						<?php endforeach; ?>
 					</ul>
 				</div>
 				
@@ -99,7 +120,7 @@
 
 </div>
 
-<!-- Datarow tpl -->
+<!-- Datarow tpl, for ajax data -->
 <script type="text/html" id="row-template">
     <li data-time="timelog">
 			<input name="check-mark-read" type="checkbox" class="feedback-check" data-value="id">

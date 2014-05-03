@@ -49,7 +49,7 @@
 			$(".feedback-list." + ftype, $parentContainer).loadTemplate($("#row-template"), data );
 		}
 		
-		doAjaxCall();
+		// doAjaxCall();
 		
 	});
 }(jQuery));

@@ -16,9 +16,9 @@ Lets you know what does your sub blog admin thinks about the network and other r
 
 == Installation ==
 
-1. Upload 'MU-dashboard-feedback-button' to the '/wp-content/plugins/' directory.
-2. Network activate it through the 'Plugins' menu in WordPress Network dashboard.
-3. Check the feedback of your sub-site admins in 'Network Dashboard > Users >  Network Users Feedback'
+1. Upload `MU-dashboard-feedback-button` to the `/wp-content/plugins/` directory.
+2. Network activate it through the `Plugins` menu in WordPress Network dashboard.
+3. Check the feedback of your sub-site admins in `Network Dashboard > Users >  Network Users Feedback`
 
 == Screenshots ==
 
@@ -32,6 +32,7 @@ Lets you know what does your sub blog admin thinks about the network and other r
 * The network feedback can be checked in the plugin's page.
 
 = 1.0.7 =
+* Feedback display (without pagination)
 * Improve db queries
 * [plugin's page] Ajax feedback fetch.
 * [plugin's page] JS templates integration.

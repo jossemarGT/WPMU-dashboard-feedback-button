@@ -291,8 +291,43 @@ class MUDashboardFeedbackButton{
 	 * @since    1.0.0
 	 */
 	public function display_plugin_admin_page() {
+		$limit =  get_site_option( "mudashfeedback_feedback_page_size" );
+		$offset = 0;
+		
+		// --- First feedback fetch ----
+		
+		// Unread positive
+		$args = array (
+			"attributes" => array (), // empty means *
+			"where" => array (
+				"feedback_type" => "positive",
+				"feadback_read" => "N"
+			),
+			"limit" => array( $limit, $offset )
+		);		
+		$unreadPositive = $this->fetch_db_feedback($args);
+		
+		// Unread negative
+		$args["where"]["feedback_type"] = "negative";
+		$unreadNegative = $this->fetch_db_feedback($args);
+		
+		// All negative
+		unset($args["where"]["feedback_read"]);
+		$allNegative = $this->fetch_db_feedback($args);
+		
+		// All positive
+		$args["where"]["feedback_type"] = "positive";
+		$allPositive = $this->fetch_db_feedback($args);
+		
+
+		
+		// --- Template render ---
 		$tplVars = array(
-			"locale_slug" => $this->plugin_slug
+			"locale_slug" => $this->plugin_slug,
+			"positive_unread" => $unreadPositive,
+			"negative_unread" => $unreadNegative,
+			"positive_all" => $allPositive,
+			"negative_all" => $allNegative
 		);
 		ViewManager::render("admin.tpl.php", $tplVars);
 	}
@@ -453,13 +488,7 @@ class MUDashboardFeedbackButton{
 		);
 		
 		$limit = isset( $args["limit"] ) ? $args["limit"] : false ;
-		/*
-		$rows = "SELECT $attributes " .
-			"FROM $table_name " .
-			( $where ? " WHERE $where " : "") .
-			( $limit ? " LIMIT $limit[0]" : "" ) .
-			( $limit && isset($limit[1]) ? " OFFSET $limit[1]" : "") ;
-		*/
+
 		$rows = $wpdb->get_results( 
 			"SELECT $attributes " .
 			"FROM $table_name " .
