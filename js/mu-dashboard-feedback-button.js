@@ -32,12 +32,13 @@
 			
 			$.ajax({
 				type : "post",
-				dataType : "json",
+				//dataType : "json",
 				url : ajaxObject.ajax_url,
 				data : cdata,
 				success: function(response) {
-					alert(response.message)
-					console.log( response.site_obj );
+					console.log(response);
+					//alert(response.message)
+					//console.log( response.site_obj );
 					$this[0].reset();
 				}
 			});

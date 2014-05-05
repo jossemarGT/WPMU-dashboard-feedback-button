@@ -58,6 +58,12 @@
 	color: #7e7e7e;
 }
 
+.feedback-pager li {
+	display: inline-block;
+	float: left;
+	margin: 0 5px;
+}
+
 /** Media queries **/
 
 /* Smartphones */

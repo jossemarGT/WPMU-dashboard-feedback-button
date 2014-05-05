@@ -25,8 +25,8 @@
 		</ul>
 		
 		<div class="resp-tabs-container">
-			
-			<div id="unread-feedback-tab" class="ui-tab-panel column-container clearfix">
+			<!-- Unread feedback tab -->
+			<div id="unread-feedback-tab" class="ui-tab-panel column-container clearfix" data-positive-total="<?php echo $positive_unread_count; ?>" data-negative-total="<?php echo $negative_all_count; ?>" data-page-size="<?php echo $page_size; ?>">
 				
 				<div class="column-float half-size feedback-positive" >
 					<h3><?php _e("Positive Feedback", $locale_slug); ?></h3>
@@ -41,6 +41,13 @@
 						</li>
 						<?php endforeach; ?>
 					</ul>
+					
+					<?php if ($page_size > $positive_unread_count): ?>
+					<ul class="feedback-pager pager-list">
+						<li><a href="?page=1&ftype=positive&read=n">1</a></li>
+						<li><a href="?page=1&ftype=positive&read=n">2</a></li>
+					</ul>
+					<?php endif; ?>
 				</div>
 				
 				<div class="column-float half-size feedback-negative" >
@@ -64,7 +71,8 @@
 				
 			</div>
 			
-			<div id="all-feedback-tab" class="ui-tab-panel column-container">
+			<!-- All feedback tab read/unread -->
+			<div id="all-feedback-tab" class="ui-tab-panel column-container clearfix"  data-positive-total="<?php echo $positive_unread_count; ?>" data-negative-total="<?php echo $negative_all_count; ?>" data-page-size="<?php echo $page_size; ?>">
 				
 				<div class="column-float half-size feedback-positive" >
 					<h3>Positive Feedback</h3>
@@ -96,13 +104,14 @@
 				
 			</div>
 			
+			<!-- Configurations tab -->
 			<div id="plugin-config-tab" class="ui-tab-panel">
 				
 				<form method="post" action="#">
 					<fieldset>
 						<legend><?php _e("Feedback review page options", $locale_slug); ?></legend>
-						<label for="feedback-page-size"><?php _e("Max page size", $locale_slug); ?> </label>
-						<input type="number" id="feedback-page-size" name="feedback-page-size" />
+						<label for="feedback-page-size"><?php _e("Max. quatity of feedback per page", $locale_slug); ?></label>
+						<input type="number" id="feedback-page-size" name="feedback-page-size" value="<?php echo $page_size; ?>" />
 					</fieldset>
 					
 					<fieldset>

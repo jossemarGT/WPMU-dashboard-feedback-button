@@ -25,7 +25,7 @@ class MUDashboardFeedbackButton{
 	 *
 	 * @var     string
 	 */
-	protected static $version = "1.0.7";
+	protected static $version = "1.0.9";
 
 	/**
 	 * Unique identifier of text domain (i18)
@@ -139,8 +139,8 @@ class MUDashboardFeedbackButton{
 		$sql = "CREATE TABLE $table_name (
 		id mediumint(9) NOT NULL AUTO_INCREMENT,
 		timelog datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-		siteid mediumint(9) NOT NULL,
-		sitename tinytext DEFAULT '' NOT NULL,
+		blogid mediumint(9) NOT NULL,
+		blogname tinytext DEFAULT '' NOT NULL,
 		sitedomain VARCHAR(200) DEFAULT '' NOT NULL,
 		feedback text NOT NULL,
 		feedback_type VARCHAR(8) DEFAULT 'positive' NOT NULL,
@@ -296,38 +296,62 @@ class MUDashboardFeedbackButton{
 		
 		// --- First feedback fetch ----
 		
-		// Unread positive
+		// Initial query
 		$args = array (
 			"attributes" => array (), // empty means *
 			"where" => array (
 				"feedback_type" => "positive",
 				"feadback_read" => "N"
 			),
+			"order" => array("timelog DESC"),
 			"limit" => array( $limit, $offset )
-		);		
-		$unreadPositive = $this->fetch_db_feedback($args);
+		);
+		
+		$args_count = array (
+			"attributes" => array ("COUNT(*)"),
+			"where" => array (
+				"feedback_type" => "positive",
+				"feadback_read" => "N"
+			)
+		);
+		
+		// Unread positive
+		$unread_positive = $this->fetch_db_feedback($args);
+		$unread_positive_count = $this->fetch_db_feedback($args_count, ARRAY_N);
 		
 		// Unread negative
 		$args["where"]["feedback_type"] = "negative";
-		$unreadNegative = $this->fetch_db_feedback($args);
+		$unread_negative = $this->fetch_db_feedback($args);
+		
+		$args_count["where"]["feedback_type"] = "negative";
+		$unread_negative_count = $this->fetch_db_feedback($args_count, ARRAY_N);
 		
 		// All negative
 		unset($args["where"]["feedback_read"]);
-		$allNegative = $this->fetch_db_feedback($args);
+		$all_negative = $this->fetch_db_feedback($args);
+		
+		unset($args_count["where"]["feedback_read"]);
+		$all_negative_count = $this->fetch_db_feedback($args_count, ARRAY_N);
 		
 		// All positive
 		$args["where"]["feedback_type"] = "positive";
-		$allPositive = $this->fetch_db_feedback($args);
+		$all_positive = $this->fetch_db_feedback($args);
 		
+		$args_count["where"]["feedback_type"] = "positive";
+		$all_positive_count = $this->fetch_db_feedback($args_count, ARRAY_N);
 
-		
 		// --- Template render ---
 		$tplVars = array(
 			"locale_slug" => $this->plugin_slug,
-			"positive_unread" => $unreadPositive,
-			"negative_unread" => $unreadNegative,
-			"positive_all" => $allPositive,
-			"negative_all" => $allNegative
+			"positive_unread" => $unread_positive,
+			"negative_unread" => $unread_negative,
+			"positive_all" => $all_positive,
+			"negative_all" => $all_negative,
+			"positive_unread_count" => $unread_positive_count[0][0],
+			"negative_unread_count" => $unread_negative_count[0][0],
+			"positive_all_count" => $all_positive_count[0][0],
+			"negative_all_count" => $all_negative_count[0][0],
+			"page_size" => $limit
 		);
 		ViewManager::render("admin.tpl.php", $tplVars);
 	}
@@ -385,11 +409,20 @@ class MUDashboardFeedbackButton{
 		// Generate form nonce
 		$nonce = wp_nonce_field( 'site_admin_feedback', 'site_admin_feedback_nonce', false, false );
 		
+		// Get blog id, because we're talking about n sites request in the same handler
+		$blog_id = get_current_blog_id();
+		
 		// Form node args
 		$args = array(
 			'meta'  => array( 
 				'class' => "feedback-form positive feedback-button-plugin",
-				'html' => ViewManager::partialRender("feedback_form.tpl.php", array( "nonce_field" => $nonce, "locale_slug" => $this->plugin_slug ))
+				'html' => ViewManager::partialRender(
+					"feedback_form.tpl.php", 
+					array( 
+						"nonce_field" => $nonce,
+						"locale_slug" => $this->plugin_slug,
+						"blog_id" => $blog_id )
+				)
 			)
 		);
 		
@@ -417,23 +450,28 @@ class MUDashboardFeedbackButton{
 			die( __( "Security check", $this->plugin_slug ) );
 		
 		global $wpdb;
-		$the_site = get_current_site();
+		
+		$clean_blogid = filter_var($_POST["feedback-blog-id"], FILTER_SANITIZE_NUMBER_INT);
 		$clean_feedback = sanitize_text_field($_POST["feedback-text"]);
 		$clean_feedback_type = sanitize_text_field($_POST["feedback-type"]);
+		
+		$the_site = get_blog_details( $clean_blogid, true );
 		
 		$table_name = $wpdb->prefix . self::$db_table_name_no_prefix ;
 		$rows_affected = $wpdb->insert( $table_name, array( 
 			"timelog" => current_time("mysql"),
-			"siteid" => $the_site->id,
-			"sitename" => $the_site->site_name,
+			"blogid" => $the_site->blog_id,
+			"blogname" => $the_site->blogname,
 			"sitedomain" => $the_site->domain,
+			//"blog_url" => $the_site->siteurl,
 			"feedback" => $clean_feedback,
 			"feedback_type" => $clean_feedback_type
 		));
 		
 		$response = array(
 			"message" => __( "Thanks for your feedback", $this->plugin_slug ),
-			"site_obj" => $the_site
+			"site_obj" => $the_site,
+			//"insert" => $rows_affected 
 		);
 		
 		wp_send_json($response);
@@ -455,6 +493,7 @@ class MUDashboardFeedbackButton{
 		$offset = $limit * ( filter_var($_POST["feedback_page"], FILTER_SANITIZE_NUMBER_INT) - 1 ) ;
 		$clean_feedback_type = sanitize_text_field($_POST["feedback_type"]);
 		$show_unread = isset($_POST["feedback-showuread"]) && $_POST["feedback_showuread"] == "Y" ;
+		$orderby = "timelog ASC";
 		
 		$args = array (
 			"attributes" => array (), // empty means *
@@ -462,6 +501,7 @@ class MUDashboardFeedbackButton{
 				"feedback_type" => $clean_feedback_type,
 				"feadback_read" => $show_unread ? "Y" : "N"
 			),
+			"order" => array($orderby),
 			"limit" => array( $limit, $offset )
 		);
 		
@@ -474,7 +514,7 @@ class MUDashboardFeedbackButton{
 	 *
 	 * @since    1.0.7
 	 */
-	protected function fetch_db_feedback ( $args = array() ) {
+	protected function fetch_db_feedback ( $args = array(), $output_type = OBJECT ) {
 		global $wpdb;
 		$table_name = $wpdb->prefix . self::$db_table_name_no_prefix;
 		
@@ -487,15 +527,17 @@ class MUDashboardFeedbackButton{
 							 )
 		);
 		
+		$order = isset( $args["order"] ) ? implode(", ", $args["order"] ) : "";
 		$limit = isset( $args["limit"] ) ? $args["limit"] : false ;
 
 		$rows = $wpdb->get_results( 
 			"SELECT $attributes " .
 			"FROM $table_name " .
 			( $where ? " WHERE $where " : "") .
+			( $order ? " ORDER BY $order" : "" ) .
 			( $limit ? " LIMIT $limit[0]" : "" ) .
 			( $limit && isset($limit[1]) ? " OFFSET $limit[1]" : "" ) 
-		, OBJECT );
+		, $output_type );
 
 		return $rows;
 	}

@@ -31,6 +31,13 @@ Lets you know what does your sub blog admin thinks about the network and other r
 * Plugin's uninstall script (drop DB Table).
 * The network feedback can be checked in the plugin's page.
 
+= 1.0.9 =
+* Basic feedback pagination.
+* BUGFIX: Get the current blog info via 
+
+= 1.0.8 =
+* Updated wrap for SQL SELECT query, now includes ORDER BY.
+
 = 1.0.7 =
 * Feedback display (without pagination)
 * Improve db queries
@@ -71,3 +78,9 @@ Lets you know what does your sub blog admin thinks about the network and other r
 * Custom admin toolbar nodes styles
 * Custom admin toolbar nodes
 * $ yo wordpress-plugin
+
+== TODO ==
+* Uninstall hook and script
+* Enhance the config page
+* Don't fetch feedback twice (on ajax update)
+* Feedback update (mark as read)
