@@ -36,13 +36,13 @@
 							<input name="check-mark-read" type="checkbox" class="feedback-check" value="<?php echo $row->id; ?>">
 							<div class="feedback-content" data-time="<?php echo $row->timelog; ?>" > 
 								<?php echo $row->feedback; ?>
-								<span class="feedback-author-sitename"> <?php echo $row->sitename; ?> // <?php echo $row->timelog; ?> </span>
+								<span class="feedback-author-sitename"><a href="<?php echo $row->blogurl ?>"><?php echo $row->blogname; ?></a> // <?php echo $row->timelog; ?> </span>
 							</div>
 						</li>
 						<?php endforeach; ?>
 					</ul>
 					
-					<?php if ($page_size > $positive_unread_count): ?>
+					<?php if ($page_size < $positive_unread_count): ?>
 					<ul class="feedback-pager pager-list">
 						<li><a href="?page=1&ftype=positive&read=n">1</a></li>
 						<li><a href="?page=1&ftype=positive&read=n">2</a></li>
@@ -58,7 +58,7 @@
 							<input name="check-mark-read" type="checkbox" class="feedback-check" value="<?php echo $row->id; ?>">
 							<div class="feedback-content" data-time="<?php echo $row->timelog; ?>" > 
 								<?php echo $row->feedback; ?>
-								<span class="feedback-author-sitename"> <?php echo $row->sitename; ?> // <?php echo $row->timelog; ?> </span>
+								<span class="feedback-author-sitename"><a href="<?php echo $row->blogurl ?>"><?php echo $row->blogname; ?></a> // <?php echo $row->timelog; ?> </span>
 							</div>
 						</li>
 						<?php endforeach; ?>
@@ -81,7 +81,7 @@
 						<li>
 							<div class="feedback-content" data-id="<?php echo $row->id; ?>" data-time="<?php echo $row->timelog; ?>" > 
 								<?php echo $row->feedback; ?>
-								<span class="feedback-author-sitename"> <?php echo $row->sitename; ?> // <?php echo $row->timelog; ?> </span>
+								<span class="feedback-author-sitename"><a href="<?php echo $row->blogurl ?>"><?php echo $row->blogname; ?></a> // <?php echo $row->timelog; ?> </span>
 							</div>
 						</li>
 						<?php endforeach; ?>
@@ -95,7 +95,7 @@
 						<li>
 							<div class="feedback-content" data-id="<?php echo $row->id; ?>" data-time="<?php echo $row->timelog; ?>" > 
 								<?php echo $row->feedback; ?>
-								<span class="feedback-author-sitename"> <?php echo $row->sitename; ?> // <?php echo $row->timelog; ?> </span>
+								<span class="feedback-author-sitename"><a href="<?php echo $row->blogurl ?>"><?php echo $row->blogname; ?></a> // <?php echo $row->timelog; ?> </span>
 							</div>
 						</li>
 						<?php endforeach; ?>
@@ -136,3 +136,4 @@
 			<div class="feedback-content" data-content-prepend="feedback" ><span class="feedback-author-sitename" data-content="sitename"></span></div>
 		</li>
 </script>
+	

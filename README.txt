@@ -33,7 +33,8 @@ Lets you know what does your sub blog admin thinks about the network and other r
 
 = 1.0.9 =
 * Basic feedback pagination.
-* BUGFIX: Get the current blog info via 
+* BUGFIX: Use $wpdb->base_prefix instead of $wpdb->prefix
+* BUGFIX: Use get_current_blog_id() instead of $current_site, eeyup, $current site holds network's info.
 
 = 1.0.8 =
 * Updated wrap for SQL SELECT query, now includes ORDER BY.

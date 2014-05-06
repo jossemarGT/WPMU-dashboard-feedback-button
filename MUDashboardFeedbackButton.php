@@ -134,13 +134,14 @@ class MUDashboardFeedbackButton{
 		// Init DB Table
 		global $wpdb;
 		
-		$table_name = $wpdb->prefix . self::$db_table_name_no_prefix ;
+		$table_name = $wpdb->base_prefix . self::$db_table_name_no_prefix ;
 		
 		$sql = "CREATE TABLE $table_name (
 		id mediumint(9) NOT NULL AUTO_INCREMENT,
 		timelog datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 		blogid mediumint(9) NOT NULL,
 		blogname tinytext DEFAULT '' NOT NULL,
+		blogurl VARCHAR(200) DEFAULT '#' NOT NULL,
 		sitedomain VARCHAR(200) DEFAULT '' NOT NULL,
 		feedback text NOT NULL,
 		feedback_type VARCHAR(8) DEFAULT 'positive' NOT NULL,
@@ -457,21 +458,23 @@ class MUDashboardFeedbackButton{
 		
 		$the_site = get_blog_details( $clean_blogid, true );
 		
-		$table_name = $wpdb->prefix . self::$db_table_name_no_prefix ;
-		$rows_affected = $wpdb->insert( $table_name, array( 
+		$table_name = $wpdb->base_prefix . self::$db_table_name_no_prefix ;
+		
+		$query_args = array( 
 			"timelog" => current_time("mysql"),
 			"blogid" => $the_site->blog_id,
 			"blogname" => $the_site->blogname,
 			"sitedomain" => $the_site->domain,
-			//"blog_url" => $the_site->siteurl,
+			"blogurl" => $the_site->siteurl,
 			"feedback" => $clean_feedback,
 			"feedback_type" => $clean_feedback_type
-		));
+		);
+		
+		$rows_affected = $wpdb->insert( $table_name, $query_args );
 		
 		$response = array(
 			"message" => __( "Thanks for your feedback", $this->plugin_slug ),
-			"site_obj" => $the_site,
-			//"insert" => $rows_affected 
+			// "site_obj" => $the_site
 		);
 		
 		wp_send_json($response);
@@ -516,7 +519,7 @@ class MUDashboardFeedbackButton{
 	 */
 	protected function fetch_db_feedback ( $args = array(), $output_type = OBJECT ) {
 		global $wpdb;
-		$table_name = $wpdb->prefix . self::$db_table_name_no_prefix;
+		$table_name = $wpdb->base_prefix . self::$db_table_name_no_prefix;
 		
 		$attributes = empty( $args["attributes"] ) ? "*" : implode(", ", $args["attributes"] );
 		$where = implode(
@@ -549,7 +552,7 @@ class MUDashboardFeedbackButton{
 	 */
 	protected function update_db_feedback ( $args = array() ) {
 		global $wpdb;
-		$table_name = $wpdb->prefix . self::$db_table_name_no_prefix;
+		$table_name = $wpdb->base_prefix . self::$db_table_name_no_prefix;
 
 		$attributes = empty( $args["attributes"] ) ? "*" : implode(", ", $args["attributes"] );
 		$where = implode(" AND ", $args["where"] );
