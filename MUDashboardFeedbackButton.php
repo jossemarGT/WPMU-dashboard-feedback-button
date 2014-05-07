@@ -495,8 +495,8 @@ class MUDashboardFeedbackButton{
 		$limit = get_site_option( "mudashfeedback_feedback_page_size" );
 		$offset = $limit * ( filter_var($_POST["feedback_page"], FILTER_SANITIZE_NUMBER_INT) - 1 ) ;
 		$clean_feedback_type = sanitize_text_field($_POST["feedback_type"]);
-		$show_unread = isset($_POST["feedback-showuread"]) && $_POST["feedback_showuread"] == "Y" ;
-		$orderby = "timelog ASC";
+		$show_unread = isset($_POST["feedback-showunread"]) && $_POST["feedback_showunread"] == "Y" ;
+		$orderby = "timelog DESC";
 		
 		$args = array (
 			"attributes" => array (), // empty means *

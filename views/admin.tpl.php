@@ -11,6 +11,8 @@
  * @link      http://jossemargt.com
  * @copyright 2014-04-13 _
  */
+
+include("TemplateUtils.php");
 ?>
 <div class="wrap">
 	
@@ -42,12 +44,8 @@
 						<?php endforeach; ?>
 					</ul>
 					
-					<?php if ($page_size < $positive_unread_count): ?>
-					<ul class="feedback-pager pager-list">
-						<li><a href="?page=1&ftype=positive&read=n">1</a></li>
-						<li><a href="?page=1&ftype=positive&read=n">2</a></li>
-					</ul>
-					<?php endif; ?>
+					<!-- Pagination -->
+					<?php pagination ( $page_size, $positive_unread_count, "positive", "N"); ?>
 				</div>
 				
 				<div class="column-float half-size feedback-negative" >
@@ -63,6 +61,9 @@
 						</li>
 						<?php endforeach; ?>
 					</ul>
+					
+					<!-- Pagination -->
+					<?php pagination ( $page_size, $negative_unread_count, "negative", "N"); ?>
 				</div>
 				
 				<div class="feedback-tools">
@@ -72,7 +73,7 @@
 			</div>
 			
 			<!-- All feedback tab read/unread -->
-			<div id="all-feedback-tab" class="ui-tab-panel column-container clearfix"  data-positive-total="<?php echo $positive_unread_count; ?>" data-negative-total="<?php echo $negative_all_count; ?>" data-page-size="<?php echo $page_size; ?>">
+			<div id="all-feedback-tab" class="ui-tab-panel column-container clearfix"  data-positive-total="<?php echo $positive_all_count; ?>" data-negative-total="<?php echo $negative_all_count; ?>" data-page-size="<?php echo $page_size; ?>">
 				
 				<div class="column-float half-size feedback-positive" >
 					<h3>Positive Feedback</h3>
@@ -86,6 +87,9 @@
 						</li>
 						<?php endforeach; ?>
 					</ul>
+					
+					<!-- Pagination -->
+					<?php pagination ( $page_size, $positive_all_count, "positive", "Y"); ?>
 				</div>
 				
 				<div class="column-float half-size feedback-negative" >
@@ -100,6 +104,8 @@
 						</li>
 						<?php endforeach; ?>
 					</ul>
+					
+					<?php pagination ( $page_size, $negative_all_count, "negative", "Y"); ?>
 				</div>
 				
 			</div>
@@ -131,9 +137,13 @@
 
 <!-- Datarow tpl, for ajax data -->
 <script type="text/html" id="row-template">
-    <li data-time="timelog">
+    <li>
 			<input name="check-mark-read" type="checkbox" class="feedback-check" data-value="id">
-			<div class="feedback-content" data-content-prepend="feedback" ><span class="feedback-author-sitename" data-content="sitename"></span></div>
+			<div class="feedback-content" data-content-prepend="feedback" data-time="timelog">
+				<span class="feedback-author-sitename" data-content-append="timelog">
+					<a data-href="blogurl" data-content="blogname"></a> // 
+				</span>
+			</div>
 		</li>
 </script>
 	

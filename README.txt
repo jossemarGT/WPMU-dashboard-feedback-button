@@ -4,7 +4,7 @@ Donate link: http://jossemargt.com
 Tags: multisite, feedback, admin toolbar
 Requires at least: 3.5.1
 Tested up to: 3.8.1
-Stable tag: 1.0.6
+Stable tag: 1.0.10
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,7 +32,7 @@ Lets you know what does your sub blog admin thinks about the network and other r
 * The network feedback can be checked in the plugin's page.
 
 = 1.0.9 =
-* Basic feedback pagination.
+* Feedback pagination.
 * BUGFIX: Use $wpdb->base_prefix instead of $wpdb->prefix
 * BUGFIX: Use get_current_blog_id() instead of $current_site, eeyup, $current site holds network's info.
 
