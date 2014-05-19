@@ -29,45 +29,45 @@ include("TemplateUtils.php");
 		<div class="resp-tabs-container">
 			<!-- Unread feedback tab -->
 			<div id="unread-feedback-tab" class="ui-tab-panel column-container clearfix" data-positive-total="<?php echo $positive_unread_count; ?>" data-negative-total="<?php echo $negative_all_count; ?>" data-page-size="<?php echo $page_size; ?>">
-				
-				<div class="column-float half-size feedback-positive" >
-					<h3><?php _e("Positive Feedback", $locale_slug); ?></h3>
-					<ul class="feedback-list positive">
-						<?php foreach( $positive_unread as $row ): ?>
-						<li>
-							<input name="check-mark-read" type="checkbox" class="feedback-check" value="<?php echo $row->id; ?>">
-							<div class="feedback-content" data-time="<?php echo $row->timelog; ?>" > 
-								<?php echo $row->feedback; ?>
-								<span class="feedback-author-sitename"><a href="<?php echo $row->blogurl ?>"><?php echo $row->blogname; ?></a> // <?php echo $row->timelog; ?> </span>
-							</div>
-						</li>
-						<?php endforeach; ?>
-					</ul>
-					
-					<!-- Pagination -->
-					<?php pagination ( $page_size, $positive_unread_count, "positive", "N"); ?>
+				<div class="clearfix">
+						<div class="column-float half-size feedback-positive" >
+							<h3><?php _e("Positive Feedback", $locale_slug); ?></h3>
+							<ul class="feedback-list positive">
+								<?php foreach( $positive_unread as $row ): ?>
+								<li>
+									<input name="check-mark-read" type="checkbox" class="feedback-check" value="<?php echo $row->id; ?>">
+									<div class="feedback-content" data-time="<?php echo $row->timelog; ?>" > 
+										<?php echo $row->feedback; ?>
+										<span class="feedback-author-sitename"><a href="<?php echo $row->blogurl ?>"><?php echo $row->blogname; ?></a> // <?php echo $row->timelog; ?> </span>
+									</div>
+								</li>
+								<?php endforeach; ?>
+							</ul>
+
+							<!-- Pagination -->
+							<?php pagination ( $page_size, $positive_unread_count, "positive", "N"); ?>
+						</div>
+
+						<div class="column-float half-size feedback-negative" >
+							<h3><?php _e("Negative Feedback", $locale_slug); ?></h3>
+							<ul class="feedback-list negative">
+								<?php foreach( $negative_unread as $row ): ?>
+								<li>
+									<input name="check-mark-read" type="checkbox" class="feedback-check" value="<?php echo $row->id; ?>">
+									<div class="feedback-content" data-time="<?php echo $row->timelog; ?>" > 
+										<?php echo $row->feedback; ?>
+										<span class="feedback-author-sitename"><a href="<?php echo $row->blogurl ?>"><?php echo $row->blogname; ?></a> // <?php echo $row->timelog; ?> </span>
+									</div>
+								</li>
+								<?php endforeach; ?>
+							</ul>
+
+							<!-- Pagination -->
+							<?php pagination ( $page_size, $negative_unread_count, "negative", "N"); ?>
+						</div>
 				</div>
-				
-				<div class="column-float half-size feedback-negative" >
-					<h3><?php _e("Negative Feedback", $locale_slug); ?></h3>
-					<ul class="feedback-list negative">
-						<?php foreach( $negative_unread as $row ): ?>
-						<li>
-							<input name="check-mark-read" type="checkbox" class="feedback-check" value="<?php echo $row->id; ?>">
-							<div class="feedback-content" data-time="<?php echo $row->timelog; ?>" > 
-								<?php echo $row->feedback; ?>
-								<span class="feedback-author-sitename"><a href="<?php echo $row->blogurl ?>"><?php echo $row->blogname; ?></a> // <?php echo $row->timelog; ?> </span>
-							</div>
-						</li>
-						<?php endforeach; ?>
-					</ul>
-					
-					<!-- Pagination -->
-					<?php pagination ( $page_size, $negative_unread_count, "negative", "N"); ?>
-				</div>
-				
 				<div class="feedback-tools">
-					<button type="button"><?php _e("Mark as read", $locale_slug); ?></button>
+					<button type="button" class="feedback-tool mark-as-read"><?php _e("Mark as read", $locale_slug); ?></button>
 				</div>
 				
 			</div>

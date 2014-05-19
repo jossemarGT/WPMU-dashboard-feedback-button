@@ -25,7 +25,7 @@ class MUDashboardFeedbackButton{
 	 *
 	 * @var     string
 	 */
-	protected static $version = "1.0.9";
+	protected static $version = "1.0.10";
 
 	/**
 	 * Unique identifier of text domain (i18)
@@ -84,8 +84,12 @@ class MUDashboardFeedbackButton{
 		}
 		
 		// Load admin style sheet and JavaScript.
-		add_action("admin_enqueue_scripts", array($this, "enqueue_admin_styles"));
-		add_action("admin_enqueue_scripts", array($this, "enqueue_admin_scripts"));
+		add_action("admin_enqueue_scripts", array($this, "enqueue_styles"));
+		add_action("admin_enqueue_scripts", array($this, "enqueue_scripts"));
+		
+		// Load public-facing style sheet and JavaScript.
+		add_action("wp_enqueue_scripts", array($this, "enqueue_styles"));
+		add_action("wp_enqueue_scripts", array($this, "enqueue_scripts"));
 		
 		// Append new elements to the admin toolbar
 		if( ! get_site_option("mudashfeedback_deactive_buttons") ) {
@@ -95,6 +99,7 @@ class MUDashboardFeedbackButton{
 		// Register ajax handler for feedback form
 		add_action( 'wp_ajax_site_admin_feedback', array($this, 'handle_site_admin_feedback') );
 		add_action( 'wp_ajax_fetch_feedback', array($this, 'fetch_admin_feedback') );
+		add_action( 'wp_ajax_mark_as_read_feedback', array($this, 'mark_as_read_admin_feedback') );
 		add_action( 'wp_ajax_form_options', array($this, 'fetch_admin_feedback') );
 
 	}
@@ -210,7 +215,7 @@ class MUDashboardFeedbackButton{
 	 *
 	 * @return    null    Return early if no settings page is registered.
 	 */
-	public function enqueue_admin_styles() {
+	public function enqueue_styles() {
 		// Always load toolbar styles
 		wp_enqueue_style($this->plugin_slug . "-admin-toolbar-styles", plugins_url("css/toolbar.css", __FILE__), array(),
 										 self::$version);
@@ -235,7 +240,7 @@ class MUDashboardFeedbackButton{
 	 *
 	 * @return    null    Return early if no settings page is registered.
 	 */
-	public function enqueue_admin_scripts() {
+	public function enqueue_scripts() {
 		wp_enqueue_script($this->plugin_slug . "-toolbar-script", plugins_url("js/mu-dashboard-feedback-button.js", __FILE__), array("jquery"), self::$version);
 		
 		wp_localize_script( $this->plugin_slug . "-toolbar-script", "ajaxObject",
@@ -260,6 +265,7 @@ class MUDashboardFeedbackButton{
 							"ajax_url" => admin_url( "admin-ajax.php" ),
 							"response_type" => "json",
 							"actions" => array( "fetch" => "fetch_feedback",
+																 "mark_read" => "mark_as_read_feedback",
 																 "update" => "")
 						) );
 		}
@@ -513,6 +519,33 @@ class MUDashboardFeedbackButton{
 	}
 	
 	/**
+	 * Fetch new feedback from DB via ajax call
+	 *
+	 * @since    1.0.10
+	 */
+	public function mark_as_read_admin_feedback() {
+		
+		//Only the super admin can check the feedback
+		if ( ! current_user_can("manage_network") ) 
+			die(__( "Access denied.", $this->plugin_slug ));
+		
+		
+		$args = array (
+			"attributes" => array (), // empty means *
+			"where" => array (
+				"feedback_type" => $clean_feedback_type,
+				"feadback_read" => $show_unread ? "Y" : "N"
+			),
+			"order" => array($orderby),
+			"limit" => array( $limit, $offset )
+		);
+		
+		$result = $this->update_db_feedback($args);
+		wp_send_json($result);
+		
+	}
+	
+	/**
 	 * Fetch new feedback from DB
 	 *
 	 * @since    1.0.7
@@ -546,9 +579,9 @@ class MUDashboardFeedbackButton{
 	}
 	
 	/**
-	 * Fetch new feedback from DB
+	 * Updates feedback from DB
 	 *
-	 * @since    1.0.7
+	 * @since    1.0.10
 	 */
 	protected function update_db_feedback ( $args = array() ) {
 		global $wpdb;
@@ -558,13 +591,15 @@ class MUDashboardFeedbackButton{
 		$where = implode(" AND ", $args["where"] );
 		$limit = isset( $args["limit"] ) ? $args["limit"] : false ;
 		
+		/*
 		$rows = $wpdb->get_results( 
-			"SELECT $attributes " .
+			"UPDATE $attributes " .
 			"FROM $table_name " .
 			( $where ? " WHERE $where " : "") .
 			( $limit ? " LIMIT $limit[0]" : "" ) .
 			( $limit && isset($limit[1]) ? " OFFSET $limit[1]" : "" ) 
 		, OBJECT );
+		*/
 		
 		return $rows;
 	}

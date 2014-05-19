@@ -19,7 +19,7 @@
 			action : feedbackPreset.actions.fetch
 		}
 		
-		// UI Setup ----
+		//--- UI Setup ----
 		
 		// Init tabs UI
 		$('#config-tab').easyResponsiveTabs({
@@ -39,7 +39,39 @@
 			e.preventDefault();
 		});
 		
-		// The logic ----
+		var $unreadTab =  $("#unread-feedback-tab");
+				
+		$(".feedback-tool", $unreadTab ).on("click", function(e){
+			var $this = $(this),
+					feedArr = [];
+			
+			if($this.hasClass("mark-as-read")){
+				
+				$("input:checked", $unreadTab).each(function(){
+					var $thisInput = $(this);
+					
+					feedArr.push($thisInput.val());
+				
+					$thisInput.parent().fadeOut();
+				});
+				
+				// Update
+				if(feedArr.length > 0) {
+					var updateObj = {
+						ids : feedArr,
+						action: feedbackPreset.actions.mark_read
+					}
+
+					// doAjaxCall(updateObj);
+				}
+				
+			} else {
+				console.log("Not implemented yet");
+			}	
+			
+		});
+		
+		//--- The logic ----
 		function doAjaxCall ( paramsObj ) {
 			
 			$.ajax({

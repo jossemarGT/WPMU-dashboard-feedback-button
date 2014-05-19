@@ -27,9 +27,10 @@ Lets you know what does your sub blog admin thinks about the network and other r
 
 == Changelog ==
 
-= 1.1.0 = 
-* Plugin's uninstall script (drop DB Table).
-* The network feedback can be checked in the plugin's page.
+= 1.0.10 =
+* Mark as read feature
+* BUGFIX: Enqueue missing public styles
+* BUGFIX: Pagination missing page
 
 = 1.0.9 =
 * Feedback pagination.
