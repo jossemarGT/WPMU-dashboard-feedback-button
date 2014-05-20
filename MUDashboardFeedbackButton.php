@@ -287,7 +287,7 @@ class MUDashboardFeedbackButton{
 			array($this, "display_plugin_admin_page") //callback
 		);
 		
-		if ( get_option( "mudashfeedback_db_version" ) ) {
+		if ( get_option( "mudashfeedback_network_enabled" ) ) {
 			$this->plugin_screen_hook_suffix .= "-network" ;
 		}
 	}

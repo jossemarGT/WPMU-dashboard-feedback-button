@@ -1,0 +1,108 @@
+# Copyright (C) 4-13-2014
+# This file is distributed under the same license as the mu-dashboard-feedback-button package.
+msgid ""
+msgstr ""
+"Project-Id-Version: WPMU Dashboard Feedback 1.1.0\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/plugin-name\n"
+"POT-Creation-Date: 2014-05-19 13:10-0600\n"
+"PO-Revision-Date: 2014-05-20 09:09-0600\n"
+"Last-Translator: Jossemar Cordero <hello@jossemargt.com>\n"
+"Language-Team: etchq <hola@etchq.net>\n"
+"Language: Spanish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-KeywordsList: __;_e;_n;_x;esc_html_e;esc_html__;esc_attr_e;"
+"esc_attr__;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;_x:1,2c;_n:1,2\n"
+"X-Poedit-Basepath: ../\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: MUDashboardFeedbackButton.php:283
+msgid "Network Users Feedback - [MU Dashboard Feedback]"
+msgstr "Retroalimentación de usuarios de red - [MU Dashboard Feedback]"
+
+#: MUDashboardFeedbackButton.php:284
+msgid "Network Users Feedback"
+msgstr "Retroalimentación de usuarios de red"
+
+#: MUDashboardFeedbackButton.php:384
+msgid "Feedback group"
+msgstr "Grupo de retroalimentación"
+
+#: MUDashboardFeedbackButton.php:396
+msgid "What I liked is..."
+msgstr "Lo que me gusta es..."
+
+#: MUDashboardFeedbackButton.php:407
+msgid "What I didn't like is..."
+msgstr "Lo que no me gusta es..."
+
+#: MUDashboardFeedbackButton.php:457
+msgid "Security check"
+msgstr "Chequeo de seguridad"
+
+#: MUDashboardFeedbackButton.php:482
+msgid "Thanks for your feedback"
+msgstr "Gracias por su comentario"
+
+#: MUDashboardFeedbackButton.php:499 MUDashboardFeedbackButton.php:530
+msgid "Access denied."
+msgstr "Acceso denegado"
+
+#: views/feedback_form.tpl.php:4
+msgid "Let us know what you think"
+msgstr "Permitanos conocer que piensa"
+
+#: views/feedback_form.tpl.php:5
+#, fuzzy
+msgid "Shout it!"
+msgstr "Enviar"
+
+# Used a similar sentence with a shorter lenght
+#: views/admin.tpl.php:24
+#, fuzzy
+msgid "Unread Feedback"
+msgstr "Sin leer"
+
+#: views/admin.tpl.php:25
+msgid "All"
+msgstr "Todo"
+
+#: views/admin.tpl.php:26
+msgid "Configuration"
+msgstr "Configuración"
+
+#: views/admin.tpl.php:34
+msgid "Positive Feedback"
+msgstr "Comentarios positivos"
+
+#: views/admin.tpl.php:52
+msgid "Negative Feedback"
+msgstr "Comentarios negativos"
+
+#: views/admin.tpl.php:70
+msgid "Mark as read"
+msgstr "Marcar como leído"
+
+#: views/admin.tpl.php:118
+msgid "Feedback review page options"
+msgstr "Opciones de página de revisión de comentarios"
+
+#: views/admin.tpl.php:119
+msgid "Max. quatity of feedback per page"
+msgstr "Máxima cantidad de comentarios por página"
+
+#: views/admin.tpl.php:124
+msgid "Toolbar buttons options"
+msgstr "Opciones de botones de retroalimentación en barra de herramientas"
+
+#: views/admin.tpl.php:125
+msgid "Disable feedback buttons from toolbar"
+msgstr "Deshablitar botones de feedback"
+
+#: views/admin.tpl.php:129
+msgid "Save changes"
+msgstr "Guardar cambios"
