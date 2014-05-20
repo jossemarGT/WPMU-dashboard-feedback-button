@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WPMU Dashboard Feedback 1.1.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/plugin-name\n"
-"POT-Creation-Date: 2014-05-19 13:10-0600\n"
-"PO-Revision-Date: 2014-05-20 09:09-0600\n"
+"POT-Creation-Date: 2014-05-20 09:32-0600\n"
+"PO-Revision-Date: 2014-05-20 09:32-0600\n"
 "Last-Translator: Jossemar Cordero <hello@jossemargt.com>\n"
 "Language-Team: etchq <hola@etchq.net>\n"
 "Language: Spanish\n"
@@ -21,8 +21,8 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 #: MUDashboardFeedbackButton.php:283
-msgid "Network Users Feedback - [MU Dashboard Feedback]"
-msgstr "Retroalimentación de usuarios de red - [MU Dashboard Feedback]"
+msgid "Network Users Feedback - [WPMU Dashboard Feedback]"
+msgstr "Retroalimentación de usuarios de red - [WPMU Dashboard Feedback]"
 
 #: MUDashboardFeedbackButton.php:284
 msgid "Network Users Feedback"
@@ -57,15 +57,12 @@ msgid "Let us know what you think"
 msgstr "Permitanos conocer que piensa"
 
 #: views/feedback_form.tpl.php:5
-#, fuzzy
 msgid "Shout it!"
 msgstr "Enviar"
 
-# Used a similar sentence with a shorter lenght
 #: views/admin.tpl.php:24
-#, fuzzy
 msgid "Unread Feedback"
-msgstr "Sin leer"
+msgstr "Comentarios sin leer"
 
 #: views/admin.tpl.php:25
 msgid "All"
@@ -75,11 +72,11 @@ msgstr "Todo"
 msgid "Configuration"
 msgstr "Configuración"
 
-#: views/admin.tpl.php:34
+#: views/admin.tpl.php:34 views/admin.tpl.php:79
 msgid "Positive Feedback"
-msgstr "Comentarios positivos"
+msgstr "Positive Feedback"
 
-#: views/admin.tpl.php:52
+#: views/admin.tpl.php:52 views/admin.tpl.php:96
 msgid "Negative Feedback"
 msgstr "Comentarios negativos"
 

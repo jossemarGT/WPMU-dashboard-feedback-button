@@ -76,7 +76,7 @@ include("TemplateUtils.php");
 			<div id="all-feedback-tab" class="ui-tab-panel column-container clearfix"  data-positive-total="<?php echo $positive_all_count; ?>" data-negative-total="<?php echo $negative_all_count; ?>" data-page-size="<?php echo $page_size; ?>">
 				
 				<div class="column-float half-size feedback-positive" >
-					<h3>Positive Feedback</h3>
+					<h3><?php _e("Positive Feedback", $locale_slug); ?></h3>
 					<ul class="feedback-list positive">
 						<?php foreach( $positive_all as $row ): ?>
 						<li>
@@ -93,7 +93,7 @@ include("TemplateUtils.php");
 				</div>
 				
 				<div class="column-float half-size feedback-negative" >
-					<h3>Negative Feedback</h3>
+					<h3><?php _e("Negative Feedback", $locale_slug); ?></h3>
 					<ul class="feedback-list negative">
 						<?php foreach( $negative_all as $row ): ?>
 						<li>

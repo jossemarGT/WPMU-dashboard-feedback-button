@@ -224,9 +224,11 @@ class MUDashboardFeedbackButton{
 			return;
 		}
 		
-		$screen = get_current_screen();		
+		$screen = get_current_screen();
+		$screen_id = $screen->is_network ? substr( $screen->id, 0, -8 ) : $screen->id;
+		
 		// Just load  when the super admin looks the plugin page
-		if ($screen->id == $this->plugin_screen_hook_suffix) {
+		if ($screen_id == $this->plugin_screen_hook_suffix) {
 			wp_enqueue_style($this->plugin_slug . "-admin-styles", plugins_url("css/admin.css", __FILE__), array(),
 				self::$version);
 		}
@@ -251,8 +253,9 @@ class MUDashboardFeedbackButton{
 		}
 
 		$screen = get_current_screen();
+		$screen_id = $screen->is_network ? substr( $screen->id, 0, -8 ) : $screen->id;
 		
-		if ($screen->id == $this->plugin_screen_hook_suffix) {
+		if ($screen_id == $this->plugin_screen_hook_suffix) {
 			wp_enqueue_script("easy-accordion-tabs-jplugin", plugins_url("js/easyResponsiveTabs.js", __FILE__),
 				array("jquery"));
 			wp_enqueue_script("load-template-jquery", plugins_url("js/jquery.loadTemplate-1.4.3.min.js", __FILE__),
@@ -280,16 +283,12 @@ class MUDashboardFeedbackButton{
 	public function add_plugin_admin_menu() {
 		$this->plugin_screen_hook_suffix = add_submenu_page(
 			"users.php",
-			__("Network Users Feedback - [MU Dashboard Feedback]", $this->plugin_slug), // Page Title
+			__("Network Users Feedback - [WPMU Dashboard Feedback]", $this->plugin_slug), // Page Title
 			__("Network Users Feedback", $this->plugin_slug), //Menu title
 			"manage_network", // Capability
 			$this->plugin_slug, // slug
 			array($this, "display_plugin_admin_page") //callback
 		);
-		
-		if ( get_option( "mudashfeedback_network_enabled" ) ) {
-			$this->plugin_screen_hook_suffix .= "-network" ;
-		}
 	}
 
 	/**
