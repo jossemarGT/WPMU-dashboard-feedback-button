@@ -1,7 +1,7 @@
 /**
- * This is the main javascript file for the MU-dashboard-feedback-button plugin's main administration view.
+ * This is the main javascript file for the WPMU-dashboard-feedback-button plugin's main administration view.
  *
- * @package   mu-dashboard-feedback-button
+ * @package   wpmu-dashboard-feedback-button
  * @author    jossemarGT <hello@jossemargt.com>
  * @license   GPL-2.0
  * @link      http://jossemargt.com
@@ -55,6 +55,7 @@
 					$thisInput.parent().fadeOut();
 				});
 				
+				console.log(feedArr);
 				// Update
 				if(feedArr.length > 0) {
 					var updateObj = {
@@ -87,7 +88,7 @@
 		
 		function renderFeedback(data, ftype, parentType = "unread") {
 			var $parentContainer = parentType == "unread" ? $("#unread-feedback-tab") : $("#all-feedback-tab");
-			
+
 			$(".feedback-list." + ftype, $parentContainer).loadTemplate($("#row-template"), data );
 		}
 		

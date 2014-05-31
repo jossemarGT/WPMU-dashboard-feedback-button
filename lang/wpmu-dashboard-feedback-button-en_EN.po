@@ -1,11 +1,11 @@
 # Copyright (C) 4-13-2014
-# This file is distributed under the same license as the mu-dashboard-feedback-button package.
+# This file is distributed under the same license as the wpmu-dashboard-feedback-button package.
 msgid ""
 msgstr ""
 "Project-Id-Version: WPMU Dashboard Feedback 1.1.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/plugin-name\n"
-"POT-Creation-Date: 2014-05-19 11:45-0600\n"
-"PO-Revision-Date: 2014-05-20 09:09-0600\n"
+"POT-Creation-Date: 2014-05-31 16:15-0600\n"
+"PO-Revision-Date: 2014-05-31 16:15-0600\n"
 "Last-Translator: Jossemar Cordero <hello@jossemargt.com>\n"
 "Language-Team: etchq <hola@etchq.net>\n"
 "Language: English\n"
@@ -20,36 +20,33 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: MUDashboardFeedbackButton.php:281
-msgid "Network Users Feedback - [MU Dashboard Feedback]"
+#: WPMUDashboardFeedbackButton.php:288
+msgid "Network Users Feedback - [WPMU Dashboard Feedback]"
 msgstr ""
 
-#: MUDashboardFeedbackButton.php:282
+#: WPMUDashboardFeedbackButton.php:289
 msgid "Network Users Feedback"
 msgstr ""
 
-#: MUDashboardFeedbackButton.php:382
+#: WPMUDashboardFeedbackButton.php:386
 msgid "Feedback group"
 msgstr ""
 
-#: MUDashboardFeedbackButton.php:394
+#: WPMUDashboardFeedbackButton.php:398
 msgid "What I liked is..."
 msgstr ""
 
-#: MUDashboardFeedbackButton.php:405
+#: WPMUDashboardFeedbackButton.php:409
 msgid "What I didn't like is..."
 msgstr ""
 
-#: MUDashboardFeedbackButton.php:455
-msgid "Security check"
-msgstr ""
-
-#: MUDashboardFeedbackButton.php:480
-msgid "Thanks for your feedback"
-msgstr ""
-
-#: MUDashboardFeedbackButton.php:497
+#: WPMUDashboardFeedbackButton.php:461 WPMUDashboardFeedbackButton.php:512
+#: WPMUDashboardFeedbackButton.php:543
 msgid "Access denied."
+msgstr ""
+
+#: WPMUDashboardFeedbackButton.php:495
+msgid "Thanks for your feedback"
 msgstr ""
 
 #: views/feedback_form.tpl.php:4
@@ -72,11 +69,16 @@ msgstr ""
 msgid "Configuration"
 msgstr ""
 
-#: views/admin.tpl.php:34
+#: views/admin.tpl.php:34 views/admin.tpl.php:79
 msgid "Positive Feedback"
 msgstr ""
 
-#: views/admin.tpl.php:52
+#: views/admin.tpl.php:41 views/admin.tpl.php:59 views/admin.tpl.php:85
+#: views/admin.tpl.php:102 views/admin.tpl.php:144
+msgid "Reply"
+msgstr ""
+
+#: views/admin.tpl.php:52 views/admin.tpl.php:96
 msgid "Negative Feedback"
 msgstr ""
 

@@ -5,7 +5,7 @@
  * This includes the header, options, and other information that should provide
  * The User Interface to the end user.
  *
- * @package   mu-dashboard-feedback-button
+ * @package   wpmu-dashboard-feedback-button
  * @author    jossemarGT <hello@jossemargt.com>
  * @license   GPL-2.0
  * @link      http://jossemargt.com
@@ -38,7 +38,7 @@ include("TemplateUtils.php");
 									<input name="check-mark-read" type="checkbox" class="feedback-check" value="<?php echo $row->id; ?>">
 									<div class="feedback-content" data-time="<?php echo $row->timelog; ?>" > 
 										<?php echo $row->feedback; ?>
-										<span class="feedback-author-sitename"><a href="<?php echo $row->blogurl ?>"><?php echo $row->blogname; ?></a> // <?php echo $row->timelog; ?> </span>
+								<span class="feedback-author-sitename"><a href="<?php echo $row->blogurl ?>"><?php echo $row->blogname; ?></a> <a href="mailto:<?php echo $row->blogadmin_email; ?>"><?php _e("Reply", $locale_slug); ?> </a>// <?php echo $row->timelog; ?> </span>
 									</div>
 								</li>
 								<?php endforeach; ?>
@@ -56,7 +56,7 @@ include("TemplateUtils.php");
 									<input name="check-mark-read" type="checkbox" class="feedback-check" value="<?php echo $row->id; ?>">
 									<div class="feedback-content" data-time="<?php echo $row->timelog; ?>" > 
 										<?php echo $row->feedback; ?>
-										<span class="feedback-author-sitename"><a href="<?php echo $row->blogurl ?>"><?php echo $row->blogname; ?></a> // <?php echo $row->timelog; ?> </span>
+								<span class="feedback-author-sitename"><a href="<?php echo $row->blogurl ?>"><?php echo $row->blogname; ?></a> <a href="mailto:<?php echo $row->blogadmin_email; ?>"><?php _e("Reply", $locale_slug); ?> </a>// <?php echo $row->timelog; ?> </span>
 									</div>
 								</li>
 								<?php endforeach; ?>
@@ -82,7 +82,7 @@ include("TemplateUtils.php");
 						<li>
 							<div class="feedback-content" data-id="<?php echo $row->id; ?>" data-time="<?php echo $row->timelog; ?>" > 
 								<?php echo $row->feedback; ?>
-								<span class="feedback-author-sitename"><a href="<?php echo $row->blogurl ?>"><?php echo $row->blogname; ?></a> // <?php echo $row->timelog; ?> </span>
+								<span class="feedback-author-sitename"><a href="<?php echo $row->blogurl ?>"><?php echo $row->blogname; ?></a> <a href="mailto:<?php echo $row->blogadmin_email; ?>"><?php _e("Reply", $locale_slug); ?> </a>// <?php echo $row->timelog; ?> </span>
 							</div>
 						</li>
 						<?php endforeach; ?>
@@ -99,7 +99,7 @@ include("TemplateUtils.php");
 						<li>
 							<div class="feedback-content" data-id="<?php echo $row->id; ?>" data-time="<?php echo $row->timelog; ?>" > 
 								<?php echo $row->feedback; ?>
-								<span class="feedback-author-sitename"><a href="<?php echo $row->blogurl ?>"><?php echo $row->blogname; ?></a> // <?php echo $row->timelog; ?> </span>
+								<span class="feedback-author-sitename"><a href="<?php echo $row->blogurl ?>"><?php echo $row->blogname; ?></a> <a href="mailto:<?php echo $row->blogadmin_email; ?>"><?php _e("Reply", $locale_slug); ?> </a>// <?php echo $row->timelog; ?> </span>
 							</div>
 						</li>
 						<?php endforeach; ?>
@@ -139,11 +139,14 @@ include("TemplateUtils.php");
 <script type="text/html" id="row-template">
     <li>
 			<input name="check-mark-read" type="checkbox" class="feedback-check" data-value="id">
-			<div class="feedback-content" data-content-prepend="feedback" data-time="timelog">
+			<div class="feedback-content" data-content-prepend="feedback" >
 				<span class="feedback-author-sitename" data-content-append="timelog">
-					<a data-href="blogurl" data-content="blogname"></a> // 
+					<a data-content="blogname" data-href="blogurl"></a> <a data-href="blogdmin_email"><?php _e("Reply", $locale_slug); ?> </a>//
 				</span>
 			</div>
 		</li>
 </script>
-	
+
+<?php
+ //<a data-href-append="blogadmin_email" href="mailto:"><?php _e("Reply", $locale_slug); </a>
+?>

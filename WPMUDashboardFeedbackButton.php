@@ -1,8 +1,8 @@
 <?php
 /**
- * MU-dashboard-feedback-button
+ * WPMU-dashboard-feedback-button
  *
- * @package   mu-dashboard-feedback-button
+ * @package   wpmu-dashboard-feedback-button
  * @author    jossemarGT <hello@jossemargt.com>
  * @license   GPL-2.0
  * @link      http://jossemargt.com
@@ -12,12 +12,12 @@
 require_once(plugin_dir_path(__FILE__) . "/views/ViewManager.php");
 
 /**
- * MU-dashboard-feedback-button class.
+ * WPMU-dashboard-feedback-button class.
  *
  * @package MUDashboardFeedbackButton
  * @author  jossemarGT <hello@jossemargt.com>
  */
-class MUDashboardFeedbackButton{
+class WPMUDashboardFeedbackButton{
 	/**
 	 * Plugin version, used for cache-busting of style and script file references.
 	 *
@@ -25,7 +25,7 @@ class MUDashboardFeedbackButton{
 	 *
 	 * @var     string
 	 */
-	protected static $version = "1.0.10";
+	protected static $version = "1.0.11";
 
 	/**
 	 * Unique identifier of text domain (i18)
@@ -34,7 +34,7 @@ class MUDashboardFeedbackButton{
 	 *
 	 * @var      string
 	 */
-	protected $plugin_slug = "mu-dashboard-feedback-button";
+	protected $plugin_slug = "wpmu-dashboard-feedback-button";
 
 	/**
 	 * Instance of this class.
@@ -133,7 +133,7 @@ class MUDashboardFeedbackButton{
 		// Check if it's a network wide installation,
 		if ( $network_wide === false ) {
 			deactivate_plugins(basename(__FILE__)); 
-			wp_die("Sorry, but you can't run this plugin, it requires to be \"Network Activated\" as WPMU superadmin.", "MU Dashboard Feedback Buttons - Activation" , array( 'response'=>403, 'back_link'=>true )); 
+			wp_die("Sorry, but you can't run this plugin, it requires to be \"Network Activated\" as WPMU superadmin.", "WPMU Dashboard Feedback Buttons - Activation" , array( 'response'=>403, 'back_link'=>true )); 
 		}
 		
 		// Init DB Table
@@ -148,6 +148,8 @@ class MUDashboardFeedbackButton{
 		blogname tinytext DEFAULT '' NOT NULL,
 		blogurl VARCHAR(200) DEFAULT '#' NOT NULL,
 		sitedomain VARCHAR(200) DEFAULT '' NOT NULL,
+		sitedomain VARCHAR(200) DEFAULT '' NOT NULL,
+		blogadmin_email VARCHAR(100) DEFAULT '' NOT NULL,
 		feedback text NOT NULL,
 		feedback_type VARCHAR(8) DEFAULT 'positive' NOT NULL,
 		feadback_read VARCHAR(1) DEFAULT 'N' NOT NULL,
@@ -243,7 +245,7 @@ class MUDashboardFeedbackButton{
 	 * @return    null    Return early if no settings page is registered.
 	 */
 	public function enqueue_scripts() {
-		wp_enqueue_script($this->plugin_slug . "-toolbar-script", plugins_url("js/mu-dashboard-feedback-button.js", __FILE__), array("jquery"), self::$version);
+		wp_enqueue_script($this->plugin_slug . "-toolbar-script", plugins_url("js/wpmu-dashboard-feedback-button.js", __FILE__), array("jquery"), self::$version);
 		
 		wp_localize_script( $this->plugin_slug . "-toolbar-script", "ajaxObject",
             array( "ajax_url" => admin_url( "admin-ajax.php" ), "response_type" => "json" ) );
@@ -260,7 +262,7 @@ class MUDashboardFeedbackButton{
 				array("jquery"));
 			wp_enqueue_script("load-template-jquery", plugins_url("js/jquery.loadTemplate-1.4.3.min.js", __FILE__),
 				array("jquery"));
-			wp_enqueue_script($this->plugin_slug . "-admin-script", plugins_url("js/mu-dashboard-feedback-button-admin.js", __FILE__),
+			wp_enqueue_script($this->plugin_slug . "-admin-script", plugins_url("js/wpmu-dashboard-feedback-button-admin.js", __FILE__),
 				array("jquery"), self::$version);
 			
 			wp_localize_script( $this->plugin_slug . "-toolbar-script", "feedbackPreset",
@@ -359,7 +361,8 @@ class MUDashboardFeedbackButton{
 			"negative_all_count" => $all_negative_count[0][0],
 			"page_size" => $limit
 		);
-		ViewManager::render("admin.tpl.php", $tplVars);
+		$viewMan =	new ViewManager();
+		$viewMan->render("admin.tpl.php", $tplVars);
 	}
 
 	/**
@@ -418,11 +421,13 @@ class MUDashboardFeedbackButton{
 		// Get blog id, because we're talking about n sites request in the same handler
 		$blog_id = get_current_blog_id();
 		
+		$viewMan = new ViewManager();
+		
 		// Form node args
 		$args = array(
 			'meta'  => array( 
 				'class' => "feedback-form positive feedback-button-plugin",
-				'html' => ViewManager::partialRender(
+				'html' => $viewMan->partialRender(
 					"feedback_form.tpl.php", 
 					array( 
 						"nonce_field" => $nonce,
@@ -453,7 +458,7 @@ class MUDashboardFeedbackButton{
 	public function handle_site_admin_feedback() {
 		$nonce = $_POST["site_admin_feedback_nonce"];
 		if (empty($_POST) || !wp_verify_nonce($nonce, "site_admin_feedback") ) 
-			die( __( "Security check", $this->plugin_slug ) );
+			die( __( "Access denied.", $this->plugin_slug ) );
 		
 		global $wpdb;
 		
@@ -463,12 +468,21 @@ class MUDashboardFeedbackButton{
 		
 		$the_site = get_blog_details( $clean_blogid, true );
 		
+		$contact_email = "";
+		
+		switch_to_blog($clean_blogid);
+		
+		$contact_email = get_bloginfo("admin_email" , $contact_email);
+		
+		restore_current_blog();
+		
 		$table_name = $wpdb->base_prefix . self::$db_table_name_no_prefix ;
 		
 		$query_args = array( 
 			"timelog" => current_time("mysql"),
 			"blogid" => $the_site->blog_id,
 			"blogname" => $the_site->blogname,
+			"blogadmin_email" => $contact_email,
 			"sitedomain" => $the_site->domain,
 			"blogurl" => $the_site->siteurl,
 			"feedback" => $clean_feedback,

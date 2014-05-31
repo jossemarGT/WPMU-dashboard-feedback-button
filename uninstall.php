@@ -2,7 +2,7 @@
 /**
  * Fired when the plugin is uninstalled.
  *
- * @package   mu-dashboard-feedback-button
+ * @package   wpmu-dashboard-feedback-button
  * @author    jossemarGT <hello@jossemargt.com>
  * @license   GPL-2.0
  * @link      http://jossemargt.com

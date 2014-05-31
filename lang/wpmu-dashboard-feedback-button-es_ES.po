@@ -1,11 +1,11 @@
 # Copyright (C) 4-13-2014
-# This file is distributed under the same license as the mu-dashboard-feedback-button package.
+# This file is distributed under the same license as the wpmu-dashboard-feedback-button package.
 msgid ""
 msgstr ""
 "Project-Id-Version: WPMU Dashboard Feedback 1.1.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/plugin-name\n"
-"POT-Creation-Date: 2014-05-20 09:32-0600\n"
-"PO-Revision-Date: 2014-05-20 09:32-0600\n"
+"POT-Creation-Date: 2014-05-31 16:15-0600\n"
+"PO-Revision-Date: 2014-05-31 16:15-0600\n"
 "Last-Translator: Jossemar Cordero <hello@jossemargt.com>\n"
 "Language-Team: etchq <hola@etchq.net>\n"
 "Language: Spanish\n"
@@ -20,41 +20,38 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: MUDashboardFeedbackButton.php:283
+#: WPMUDashboardFeedbackButton.php:288
 msgid "Network Users Feedback - [WPMU Dashboard Feedback]"
 msgstr "Retroalimentación de usuarios de red - [WPMU Dashboard Feedback]"
 
-#: MUDashboardFeedbackButton.php:284
+#: WPMUDashboardFeedbackButton.php:289
 msgid "Network Users Feedback"
 msgstr "Retroalimentación de usuarios de red"
 
-#: MUDashboardFeedbackButton.php:384
+#: WPMUDashboardFeedbackButton.php:386
 msgid "Feedback group"
 msgstr "Grupo de retroalimentación"
 
-#: MUDashboardFeedbackButton.php:396
+#: WPMUDashboardFeedbackButton.php:398
 msgid "What I liked is..."
-msgstr "Lo que me gusta es..."
+msgstr "Me gusta que..."
 
-#: MUDashboardFeedbackButton.php:407
+#: WPMUDashboardFeedbackButton.php:409
 msgid "What I didn't like is..."
-msgstr "Lo que no me gusta es..."
+msgstr "No me gusta que..."
 
-#: MUDashboardFeedbackButton.php:457
-msgid "Security check"
-msgstr "Chequeo de seguridad"
-
-#: MUDashboardFeedbackButton.php:482
-msgid "Thanks for your feedback"
-msgstr "Gracias por su comentario"
-
-#: MUDashboardFeedbackButton.php:499 MUDashboardFeedbackButton.php:530
+#: WPMUDashboardFeedbackButton.php:461 WPMUDashboardFeedbackButton.php:512
+#: WPMUDashboardFeedbackButton.php:543
 msgid "Access denied."
 msgstr "Acceso denegado"
 
+#: WPMUDashboardFeedbackButton.php:495
+msgid "Thanks for your feedback"
+msgstr "Gracias por su comentario"
+
 #: views/feedback_form.tpl.php:4
 msgid "Let us know what you think"
-msgstr "Permitanos conocer que piensa"
+msgstr "Comenta acá"
 
 #: views/feedback_form.tpl.php:5
 msgid "Shout it!"
@@ -75,6 +72,11 @@ msgstr "Configuración"
 #: views/admin.tpl.php:34 views/admin.tpl.php:79
 msgid "Positive Feedback"
 msgstr "Positive Feedback"
+
+#: views/admin.tpl.php:41 views/admin.tpl.php:59 views/admin.tpl.php:85
+#: views/admin.tpl.php:102 views/admin.tpl.php:144
+msgid "Reply"
+msgstr "Responder"
 
 #: views/admin.tpl.php:52 views/admin.tpl.php:96
 msgid "Negative Feedback"
@@ -103,3 +105,6 @@ msgstr "Deshablitar botones de feedback"
 #: views/admin.tpl.php:129
 msgid "Save changes"
 msgstr "Guardar cambios"
+
+#~ msgid "Security check"
+#~ msgstr "Chequeo de seguridad"

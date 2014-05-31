@@ -1,7 +1,7 @@
 /**
  * Form's Behavioral management via jQuery
  *
- * @package   mu-dashboard-feedback-button
+ * @package   wpmu-dashboard-feedback-button
  * @author    jossemarGT <hello@jossemargt.com>
  * @license   GPL-2.0
  * @link      http://jossemargt.com
@@ -26,8 +26,14 @@
 			evt.preventDefault();
 			
 			var $this = $(this),
+					$feedContent = $(".feedback-text", $this ),
 					feedbackType = $this.parent().hasClass("positive") ? "positive" : "negative";
 
+			if ( $feedContent.val().length < 10 ) {
+				console.log("nope");
+				return false;
+			}
+			
 			var cdata = $this.serialize() + "&action=site_admin_feedback&feedback-type=" + feedbackType ;
 			
 			$.ajax({

@@ -1,4 +1,4 @@
-=== mu-dashboard-feedback-button ===
+=== WPMU Dashboard Feedback Button ===
 Contributors: jossemarGT
 Donate link: http://jossemargt.com
 Tags: multisite, feedback, admin toolbar
@@ -16,7 +16,7 @@ Lets you know what does your sub blog admin thinks about the network and other r
 
 == Installation ==
 
-1. Upload `MU-dashboard-feedback-button` to the `/wp-content/plugins/` directory.
+1. Upload `WPMU-dashboard-feedback-button` to the `/wp-content/plugins/` directory.
 2. Network activate it through the `Plugins` menu in WordPress Network dashboard.
 3. Check the feedback of your sub-site admins in `Network Dashboard > Users >  Network Users Feedback`
 
@@ -63,7 +63,7 @@ Lets you know what does your sub blog admin thinks about the network and other r
 
 = 1.0.3 =
 * Add > Ajax handling via admin-ajax.php and nonces
-* Add > mu-dashboard-feedback-button.js
+* Add > wpmu-dashboard-feedback-button.js
 * Update > toolbar styles
 * Update > README file
 
